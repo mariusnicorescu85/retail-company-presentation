@@ -1,0 +1,13 @@
+# Ignore markdown files (they're just documentation)
+*.md
+*.json
+!package.json
+!vercel.json
+!salaries_*.json
+
+# Keep HTML, CSS, JS, and screenshots
+*.html
+*.css
+*.js
+screenshots/
+

@@ -1,0 +1,571 @@
+{
+  "name": "daily_breakdown_pyt_with_email_and_bonus_breakdown",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -352
+      ],
+      "id": "264f206b-526b-46cc-a08d-2b407fa6cdbc",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1rG-jU59lHI_E4BYWtCOYCR0b9Nym5HbH",
+          "mode": "list",
+          "cachedResultName": "pyt_trafford_half_month_december.csv",
+          "cachedResultUrl": "https://drive.google.com/file/d/1rG-jU59lHI_E4BYWtCOYCR0b9Nym5HbH/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        224,
+        -352
+      ],
+      "id": "f07c377d-947e-42b2-8439-24e636c08d4b",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "N9O7q6jvu9vpPv9c",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -352
+      ],
+      "id": "cb85dd45-6434-4232-88a5-5447b5b5531d",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1cuiV4csboSq9RXtGshVbKZCnTOWElhCJTfo3b_sgMrw",
+          "mode": "list",
+          "cachedResultName": "pyt_daily_breakdown",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cuiV4csboSq9RXtGshVbKZCnTOWElhCJTfo3b_sgMrw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1932452818,
+          "mode": "list",
+          "cachedResultName": "december",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cuiV4csboSq9RXtGshVbKZCnTOWElhCJTfo3b_sgMrw/edit#gid=1932452818"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Field",
+              "displayName": "Field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Value",
+              "displayName": "Value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Hours",
+              "displayName": "Hours",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sales",
+              "displayName": "Sales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AddlSales",
+              "displayName": "AddlSales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "HrlyRate",
+              "displayName": "HrlyRate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Base",
+              "displayName": "Base",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Commission",
+              "displayName": "Commission",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PaymentType",
+              "displayName": "PaymentType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1568,
+        -352
+      ],
+      "id": "6b0cfbbe-6e93-47ab-ae9b-9f5d89485976",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wI9ETcooYaqdbWBR",
+          "name": "marius.nicorescu85@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let currentEmployee = null;\nconst cleaned = [];\n\nfunction excelDateToJSDate(serial) {\n  const utc_days = Math.floor(serial - 25569);\n  const utc_value = utc_days * 86400;\n  const date_info = new Date(utc_value * 1000);\n  return date_info.toISOString().split(\"T\")[0];\n}\n\nfunction excelTimeToString(time) {\n  const totalSeconds = Math.round(time * 24 * 60 * 60);\n  const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');\n  const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');\n  return `${hours}:${minutes}`;\n}\n\nfor (const item of items) {\n  const row = item.json;\n  const keys = Object.keys(row);\n  const firstValue = row[keys[0]];\n\n  // Detect new employee section\n  if (!currentEmployee && keys[0].startsWith('Employee:')) {\n    const nameParts = keys[0].split(':')[1].trim().split(/\\s+/);\n    currentEmployee = nameParts.join(' ');\n  }\n\n  if (firstValue && typeof firstValue === 'string' && firstValue.startsWith('Employee:')) {\n    const nameParts = firstValue.split(':')[1].trim().split(/\\s+/);\n    currentEmployee = nameParts.join(' ');\n    continue;\n  }\n\n  // --- replace your current \"skip\" logic with this ---\n\n// If Hours isn't a number, skip\nconst hoursVal = parseFloat(row['__EMPTY_2']);\nif (isNaN(hoursVal)) {\n  continue;\n}\n\n// Keep only: normal rows with times OR adjustment rows (negative hours) even without times\nconst hasTimes = !!row['__EMPTY'] && !!row['__EMPTY_1'];\nif (!hasTimes && Math.abs(hoursVal) > 1) {\n  continue;\n}\n\n// Skip headers/totals\nif (\n  firstValue === 'Date' ||\n  firstValue === 'Group Totals' ||\n  hoursVal > 24 // protection against total rows\n) {\n  continue;\n}\n\n  \n// If it’s not an adjustment and it has no times, skip it\n\n\n\n  // Push cleaned and formatted row\n  cleaned.push({\n    json: {\n      Employee: currentEmployee,\n      Date: excelDateToJSDate(row[keys[0]]),\n      TimeIn: hasTimes ? excelTimeToString(row['__EMPTY']) : \"\",\n      TimeOut: hasTimes? excelTimeToString(row['__EMPTY_1']) : \"\",\n      Hours: hoursVal,\n      Lunch: parseFloat(row['__EMPTY_3']),\n      SalesGoal: parseFloat(row['__EMPTY_4']),\n      Sales: parseFloat(row['__EMPTY_5']),\n      AddlSales: parseFloat(row['__EMPTY_6']),\n      HrlyRate: parseFloat(row['__EMPTY_7']),\n      Base: parseFloat(row['__EMPTY_8']),\n    }\n  });\n}\n\nreturn cleaned;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -352
+      ],
+      "id": "f138a968-3e0f-4b7c-a93a-9b69fbe6dcae",
+      "name": "parse csv"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Fixed Employee Name Mapper (N8N CODE NODE) ===\n// Place this node after \"parse hours csv\" and before \"format employee full\"\n\nconst items = $items();\nconst cleanedItems = [];\n\n// 🔧 EMPLOYEE NAME MAPPING - Customize this section\nconst NAME_MAPPING = {\n  \"aleeza waseem\": \"Aleeza\",\n  \"codruta nicorescu\": \"Codruta\", \n  \"eiman eiman\": \"Eiman\",\n  \"eshaal awan\": \"Eshaal\",\n  \"fatima zulficar\": \"Fatima\",\n  \"hasseb alina\": \"Alina\",\n  \"hasseb\": \"Alina\",\n  \"jude elsidiq\": \"Jude\",\n  \"katelyn harnett\": \"Katelyn\",\n  \"katie katie\": \"Katie\",\n  \"lee adam\": \"Adam\",\n  \"lee\": \"Adam\",\n  \"makeel rimsha\": \"Rimsha\",\n  \"makeel\": \"Rimsha\",\n  \"maleeha ali\": \"Maleeha\",\n  \"misha misha\": \"Misha\",\n  \"talya talya\": \"Talya\",\n  \"temitope t\": \"Temitope\",\n  \"tuba raja\": \"Tuba\",\n  \"zoya julani\": \"Zoya\",\n  \"Nadeem\": \"Monica\",\n  \"salami\": \"Bucola\",\n  \"Kassam\": \"Anah\",\n  \"Silva\": \"Cesaltina\",\n  \"Lucy\": \"Lucy\",\n  \"Memfy\": \"Gia\",\n  \"Molly\": \"Molly\",\n  \"Oboh\": \"Trena\"\n};\n\n// 🔧 EXCLUDE PATTERNS - Names/patterns to skip entirely\nconst EXCLUDE_PATTERNS = [\n  \"test\", \"TEST\", \"admin\", \"ADMIN\", \"manager\", \"MANAGER\", \n  \"demo\", \"DEMO\", \"example\", \"EXAMPLE\", \"temp\", \"TEMP\"\n];\n\n// Function to normalize and map employee names\nfunction mapEmployeeName(originalName) {\n  if (!originalName || typeof originalName !== 'string') {\n    return null; // Skip invalid names\n  }\n  \n  const trimmedName = originalName.trim();\n  \n  // Check if name should be excluded\n  if (EXCLUDE_PATTERNS.some(pattern => \n    trimmedName.toLowerCase().includes(pattern.toLowerCase())\n  )) {\n    console.log(`⚠️ EXCLUDING: \"${trimmedName}\" - matches exclude pattern`);\n    return null;\n  }\n  \n  // Check direct mapping first\n  if (NAME_MAPPING[trimmedName]) {\n    console.log(`✅ MAPPED: \"${trimmedName}\" → \"${NAME_MAPPING[trimmedName]}\"`);\n    return NAME_MAPPING[trimmedName];\n  }\n  \n  // Check case-insensitive mapping\n  const lowerName = trimmedName.toLowerCase();\n  if (NAME_MAPPING[lowerName]) {\n    console.log(`✅ MAPPED (case): \"${trimmedName}\" → \"${NAME_MAPPING[lowerName]}\"`);\n    return NAME_MAPPING[lowerName];\n  }\n  \n  // Check if it contains any mapped names (only for longer names to avoid false matches)\n  for (const [key, value] of Object.entries(NAME_MAPPING)) {\n    if (key.length > 3 && trimmedName.toLowerCase().includes(key.toLowerCase())) {\n      console.log(`✅ MAPPED (contains): \"${trimmedName}\" → \"${value}\"`);\n      return value;\n    }\n  }\n  \n  // If no mapping found, return original (you can change this behavior)\n  console.log(`❓ NO MAPPING: \"${trimmedName}\" - keeping original`);\n  return trimmedName;\n}\n\n// 📊 Track mapping statistics\nconst mappingStats = {\n  totalProcessed: 0,\n  totalMapped: 0,\n  totalExcluded: 0,\n  uniqueEmployees: new Set(),\n  mappingDetails: {}\n};\n\n// Process each item and map employee names\nfor (const item of items) {\n  const record = item.json;\n  mappingStats.totalProcessed++;\n  \n  // Map the employee name if it exists\n  if (record.Employee) {\n    const originalName = record.Employee;\n    const mappedName = mapEmployeeName(originalName);\n    \n    // Skip this record if name should be excluded\n    if (mappedName === null) {\n      mappingStats.totalExcluded++;\n      continue;\n    }\n    \n    // Update the employee name\n    record.Employee = mappedName;\n    mappingStats.uniqueEmployees.add(mappedName);\n    \n    // Track mapping details\n    if (originalName !== mappedName) {\n      mappingStats.totalMapped++;\n      if (!mappingStats.mappingDetails[originalName]) {\n        mappingStats.mappingDetails[originalName] = mappedName;\n      }\n      console.log(`🔄 RENAMED: \"${originalName}\" → \"${mappedName}\"`);\n    }\n  }\n  \n  // Add the processed record\n  cleanedItems.push({ json: record });\n}\n\n// 📈 Enhanced summary logging\nconst totalKept = cleanedItems.length;\n\nconsole.log(`\\n📊 PROCESSING SUMMARY:`);\nconsole.log(`   Total Records Processed: ${mappingStats.totalProcessed}`);\nconsole.log(`   Records Kept: ${totalKept}`);\nconsole.log(`   Records Excluded: ${mappingStats.totalExcluded}`);\nconsole.log(`   Names Actually Mapped: ${mappingStats.totalMapped}`);\n\nconsole.log(`\\n🔄 NAME MAPPINGS APPLIED:`);\nObject.entries(mappingStats.mappingDetails).forEach(([original, mapped]) => {\n  console.log(`   \"${original}\" → \"${mapped}\"`);\n});\n\n// Get unique employee names in the output\nconst uniqueEmployees = Array.from(mappingStats.uniqueEmployees).sort();\n\nconsole.log(`\\n👥 FINAL EMPLOYEE LIST (${uniqueEmployees.length}):`);\nuniqueEmployees.forEach((name, index) => {\n  console.log(`   ${index + 1}. ${name}`);\n});\n\n// 🔍 Data quality check - look for potential issues\nconsole.log(`\\n🔍 DATA QUALITY CHECK:`);\n\n// Check for employees with very few records (potential data issues)\nconst employeeCounts = {};\ncleanedItems.forEach(item => {\n  const emp = item.json.Employee;\n  if (emp) {\n    employeeCounts[emp] = (employeeCounts[emp] || 0) + 1;\n  }\n});\n\nObject.entries(employeeCounts).forEach(([emp, count]) => {\n  if (count < 5) {\n    console.log(`   ⚠️ ${emp}: Only ${count} records (potential incomplete data)`);\n  } else if (count > 100) {\n    console.log(`   📈 ${emp}: ${count} records (high activity)`);\n  } else {\n    console.log(`   ✅ ${emp}: ${count} records`);\n  }\n});\n\n// Check for unmapped names that might need attention\nconst processedNames = new Set();\nitems.forEach(item => {\n  if (item.json.Employee) {\n    processedNames.add(item.json.Employee.toLowerCase());\n  }\n});\n\nconst unmappedNames = [];\nprocessedNames.forEach(name => {\n  if (!NAME_MAPPING[name] && !EXCLUDE_PATTERNS.some(pattern => \n    name.includes(pattern.toLowerCase())\n  )) {\n    unmappedNames.push(name);\n  }\n});\n\nif (unmappedNames.length > 0) {\n  console.log(`\\n⚠️ POTENTIAL UNMAPPED NAMES TO REVIEW:`);\n  unmappedNames.forEach(name => {\n    console.log(`   \"${name}\" - Consider adding to NAME_MAPPING`);\n  });\n}\n\nconsole.log(`\\n✅ Name mapping completed successfully!`);\n\nreturn cleanedItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -352
+      ],
+      "id": "2c025a92-6d46-4b02-9f91-e0446fa98186",
+      "name": "employee name mapper"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === FORMAT EMPLOYEE FULL — Enhanced with Detailed Bonus Breakdown (PYT + ADVANCES) ===\nconst records = $items().map(i => i.json);\nconst allRows = [];\n\n// 🎁 Enhanced Bonus Structure - Detailed Breakdown (PYT)\nconst MANUAL_BONUSES = {\n  \"Tuba\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Eshaal\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Jude\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Katelyn\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Misha\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Talya\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Temitope\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Zoya\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0, // Zoya can get social media bonus\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Rimsha\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Fatima\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Alina\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Monica\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Lucy\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Codruta\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Adam\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Eiman\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Maleeha\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Bucola\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Anah\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Cesaltina\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Katie\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n  \"Aleeza\": {\n    dailySalesBonus: 0,\n    firstLastHourBonus: 0,\n    socialMediaBonus: 0,\n    managementBonus: 0,\n    managementConsistencyBonus: 0,\n    transportFuel: 0,\n    personalSalesBonus: 0,\n    extraBonus: 0,\n  },\n};\n\n// 💰 ADVANCES TRACKING – same pattern as Opatra\n// 👉 Edit these numbers each month when someone has taken an advance\nconst ADVANCES = {\n  \"Tuba\": 0,\n  \"Eshaal\": 0,\n  \"Jude\": 0,\n  \"Katelyn\": 0,\n  \"Misha\": 0,\n  \"Talya\": 0,\n  \"Temitope\": 0,\n  \"Zoya\": 0,\n  \"Rimsha\": 0,\n  \"Fatima\": 0,\n  \"Alina\": 0,\n  \"Monica\": 0,\n  \"Lucy\": 0,\n  \"Codruta\": 0,\n  \"Adam\": 0,\n  \"Eiman\": 0,\n  \"Maleeha\": 0,\n  \"Bucola\": 0,\n  \"Anah\": 0,\n  \"Cesaltina\": 0,\n  \"Katie\": 0,\n  \"Aleeza\": 0,\n};\n\nfunction calculateTotalBonus(bonusBreakdown) {\n  if (!bonusBreakdown) return 0;\n  return (\n    toNum(bonusBreakdown.dailySalesBonus) +\n    toNum(bonusBreakdown.firstLastHourBonus) +\n    toNum(bonusBreakdown.socialMediaBonus) +\n    toNum(bonusBreakdown.managementBonus) +\n    toNum(bonusBreakdown.managementConsistencyBonus) +\n    toNum(bonusBreakdown.transportFuel) +\n    toNum(bonusBreakdown.personalSalesBonus) +\n    toNum(bonusBreakdown.extraBonus)\n  );\n}\n\nconst money = (n) => `£${(Number(n) || 0).toFixed(2)}`;\nconst toNum = (v) =>\n  v === null || v === undefined ? 0 : Number(v) || 0;\n\n// Header row\nallRows.push({\n  Field: \"Field\",\n  Value: \"Value\",\n  Date: \"Date\",\n  Hours: \"Hours\",\n  Sales: \"Sales\",\n  AddlSales: \"Addl Sales\",\n  HrlyRate: \"Hrly Rate\",\n  Base: \"Base\",\n  Commission: \"Commission\",\n  PaymentType: \"Payment Type\",\n});\n\n// Group by employee\nconst groups = records.reduce((acc, r) => {\n  (acc[r.Employee] ??= []).push(r);\n  return acc;\n}, {});\n\nfor (const [employee, rows] of Object.entries(groups)) {\n  const dailyRows = rows.filter((r) => toNum(r.Hours) !== 0);\n\n  // --- Totals ---\n  let totalSales = 0,\n    totalAddl = 0,\n    totalHours = 0,\n    totalCommission = 0,\n    hourlyRate = 0;\n\n  for (const r of dailyRows) {\n    totalSales += toNum(r.Sales);\n    totalAddl += toNum(r.AddlSales);\n    totalHours += toNum(r.Hours);\n    totalCommission += toNum(r.Commission);\n    const hr = toNum(r.HrlyRate);\n    if (hr) hourlyRate = hr;\n  }\n\n  // --- Worked days ---\n  const EPS = 1e-6;\n  const hoursByDate = rows.reduce((acc, r) => {\n    const d = r.Date;\n    if (!d) return acc;\n    acc[d] = (acc[d] || 0) + toNum(r.Hours);\n    return acc;\n  }, {});\n  const workedDays = Object.values(hoursByDate).filter((h) => h > EPS).length;\n\n  const adjustedSales = totalSales + totalAddl;\n  const avgSales = workedDays ? totalSales / workedDays : 0;\n  const isTuba = employee === \"Tuba\";\n  const bonusBreakdown = MANUAL_BONUSES[employee] || {};\n  const bonus = calculateTotalBonus(bonusBreakdown);\n  const advance = ADVANCES[employee] || 0;\n\n  // ---- Left-hand summary ----\n  const S = [];\n  S.push({ Field: `Employee: ${employee}`, Value: \"\" });\n  S.push({ Field: \"Worked Days\", Value: workedDays.toString() });\n  S.push({ Field: \"Worked Hours\", Value: totalHours.toFixed(2) });\n  S.push({ Field: \"Sales\", Value: money(totalSales) });\n  S.push({ Field: \"Addl Sales\", Value: money(totalAddl) });\n  S.push({ Field: \"Adjusted Sales\", Value: money(adjustedSales) });\n  S.push({ Field: \"Avg Sale / Day\", Value: money(avgSales) });\n  S.push({ Field: \"Rate per Hour\", Value: money(hourlyRate) });\n\n  const hoursSalary = totalHours * hourlyRate;\n  S.push({ Field: \"Hours Salary\", Value: money(hoursSalary) });\n\n  // Bonus breakdown (only if > 0)\n  if (bonus > 0) {\n    S.push({ Field: \"--- BONUS BREAKDOWN ---\", Value: \"\" });\n\n    if (bonusBreakdown.dailySalesBonus > 0) {\n      S.push({\n        Field: \"  Daily Sales Bonus\",\n        Value: money(bonusBreakdown.dailySalesBonus),\n      });\n    }\n    if (bonusBreakdown.firstLastHourBonus > 0) {\n      S.push({\n        Field: \"  First/Last Hour Bonus\",\n        Value: money(bonusBreakdown.firstLastHourBonus),\n      });\n    }\n    if (bonusBreakdown.socialMediaBonus > 0) {\n      S.push({\n        Field: \"  Social Media Bonus\",\n        Value: money(bonusBreakdown.socialMediaBonus),\n      });\n    }\n    if (bonusBreakdown.managementBonus > 0) {\n      S.push({\n        Field: \"  Management Bonus\",\n        Value: money(bonusBreakdown.managementBonus),\n      });\n    }\n    if (bonusBreakdown.managementConsistencyBonus > 0) {\n      S.push({\n        Field: \"  Mgmt Consistency Bonus\",\n        Value: money(bonusBreakdown.managementConsistencyBonus),\n      });\n    }\n    if (bonusBreakdown.transportFuel > 0) {\n      S.push({\n        Field: \"  Transport/Fuel\",\n        Value: money(bonusBreakdown.transportFuel),\n      });\n    }\n    if (bonusBreakdown.personalSalesBonus > 0) {\n      S.push({\n        Field: \"  Personal Sales Bonus\",\n        Value: money(bonusBreakdown.personalSalesBonus),\n      });\n    }\n    if (bonusBreakdown.extraBonus > 0) {\n      S.push({\n        Field: \"  Extra Bonus\",\n        Value: money(bonusBreakdown.extraBonus),\n      });\n    }\n\n    S.push({ Field: \"TOTAL BONUS\", Value: money(bonus) });\n  }\n\n  // Show Hours + Bonus (before advances) for everyone\n  const hoursPlusBonus = hoursSalary + bonus;\n  S.push({ Field: \"Hours + Bonus\", Value: money(hoursPlusBonus) });\n\n  if (isTuba) {\n    // Tuba uses monthly max of Hourly vs Commission\n    S.push({ Field: \"Total Commission\", Value: money(totalCommission) });\n\n    const monthlyMax = Math.max(hoursSalary, totalCommission);\n    const baseFinalPay = monthlyMax + bonus;\n    const method = monthlyMax === hoursSalary ? \"Hourly\" : \"Commission\";\n\n    if (advance > 0) {\n      S.push({\n        Field: \"Advance Deduction\",\n        Value: money(-advance),\n      });\n      const finalAfterAdvance = baseFinalPay - advance;\n      S.push({\n        Field: \"FINAL PAY\",\n        Value: `${money(finalAfterAdvance)} (${method} monthly max, after advance)`,\n      });\n    } else {\n      S.push({\n        Field: \"FINAL PAY\",\n        Value: `${money(baseFinalPay)} (${method} monthly max)`,\n      });\n    }\n  } else {\n    // All other PYT staff – hourly only\n    if (advance > 0) {\n      S.push({\n        Field: \"Advance Deduction\",\n        Value: money(-advance),\n      });\n      S.push({\n        Field: \"Total Payment\",\n        Value: money(hoursPlusBonus - advance),\n      });\n    } else {\n      S.push({\n        Field: \"Total Payment\",\n        Value: money(hoursPlusBonus),\n      });\n    }\n  }\n\n  // ---- Output combined summary + daily rows side-by-side ----\n  const maxRows = Math.max(S.length, dailyRows.length);\n  for (let i = 0; i < maxRows; i++) {\n    const row = {\n      Field: \"\",\n      Value: \"\",\n      Date: \"\",\n      Hours: \"\",\n      Sales: \"\",\n      AddlSales: \"\",\n      HrlyRate: \"\",\n      Base: \"\",\n      Commission: \"\",\n      PaymentType: \"\",\n    };\n\n    if (S[i]) {\n      row.Field = S[i].Field;\n      row.Value = S[i].Value;\n    }\n\n    if (dailyRows[i]) {\n      const d = dailyRows[i];\n      row.Date = d.Date;\n      row.Hours = toNum(d.Hours).toFixed(2);\n      row.Sales = toNum(d.Sales).toFixed(2);\n      row.AddlSales = toNum(d.AddlSales).toFixed(2);\n      row.HrlyRate = toNum(d.HrlyRate).toFixed(2);\n      row.Base = toNum(d.Base).toFixed(2);\n\n      // Only Tuba has commission + paymentType on the right-hand side\n      if (isTuba) {\n        row.Commission = toNum(d.Commission).toFixed(2);\n        row.PaymentType = d.PaymentType || \"\";\n      }\n    }\n\n    allRows.push(row);\n  }\n\n  allRows.push({});\n}\n\nconsole.log(\n  `✅ Formatted ${Object.keys(groups).length} PYT employees with detailed bonus breakdown and advances`\n);\n\nreturn allRows.map((r) => ({ json: r }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -352
+      ],
+      "id": "e4b0c800-a97e-47ab-bae2-3f4fae73aa4b",
+      "name": "format employee full"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === EMPLOYEE PAYMENT CONDITIONS NODE (Monthly comparison ready) ===\n// Place this node between \"employee name mapper\" and \"format employee full\"\n\nconst items = $items();\nconst processedItems = [];\n\n// 🔧 EMPLOYEE PAYMENT CONDITIONS - Based on your requirements\nconst EMPLOYEE_CONDITIONS = {\n  // 💎 SENIOR STYLISTS (£12.50/hour and £12.21/hour)\n  \"Alina\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.50 }],\n    description: \"Senior stylist: £12.50/hour, no commission\"\n  },\n\n  \"Rimsha\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Senior stylist: £12.21/hour, no commission\"\n  },\n\n  \"Temitope\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Senior stylist: £12.21/hour, no commission\"\n  },\n\n  \"Zoya\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Senior stylist: £12.21/hour, no commission\"\n  },\n\n  \"Bucola\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Stylist: £12.21/hour, no commission\"\n  },\n\n  // 💇‍♀️ STANDARD STYLISTS (£10 per hour)\n  \"Fatima\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \"Jude\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \"Katelyn\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \"Talya\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \"Lucy\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Stylist: £12.21/hour, no commission\"\n  },\n\n  \"Cesaltina\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \"Katie\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \"Aleeza\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \"Anah\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \"Gia\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission\"\n  },\n\n  \n  \"Trena\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Stylist: £12.21/hour, no commission\"\n  },\n\n  // 🌟 JUNIOR STYLISTS (£7.55 per hour)\n  \"Eiman\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 7.55 }],\n    description: \"Junior stylist: £7.55/hour, no commission\"\n  },\n\n  \"Eshaal\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 7.55 }],\n    description: \"Junior stylist: £7.55/hour, no commission\"\n  },\n\n  \"Monica\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 7.55 }],\n    description: \"Junior stylist: £7.55/hour, no commission\"\n  },\n\n  \"Misha\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 7.55 }],\n    description: \"Junior stylist: £7.55/hour, no commission\"\n  },\n\n  // 🏢 MANAGERS\n  \"Codruta\": {\n    paymentType: \"manager\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 0 }],\n    description: \"Manager\"\n  },\n\n  \"Adam\": {\n    paymentType: \"manager\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 0 }],\n    description: \"Manager\"\n  },\n\n  // 💰 TIERED COMMISSION EMPLOYEE (Tuba)\n  \"Tuba\": {\n    paymentType: \"tiered_commission\",\n    changes: [{\n      effectiveDate: \"2025-01-01\",\n      hourlyRate: 12.21,\n      // Progressive daily tiers (as provided)\n      tier1: { threshold: 0,    salesPercentage: 0.22 },   // £0—£600\n      tier2: { threshold: 600,  salesPercentage: 0.24 },   // £601—£1,000\n      tier3: { threshold: 1000, salesPercentage: 0.25 },   // £1,001—£1,600\n      tier4: { threshold: 1600, salesPercentage: 0.26 }    // £1,601+\n    }],\n    description: \"Hybrid: £12.21/hour OR progressive monthly commission (monthly max applied in formatter)\"\n  },\n\n  // ❓ OTHER EMPLOYEES (rates need confirmation)\n  \"Aiyla\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 10.00 }],\n    description: \"Stylist: £10/hour, no commission (RATE NEEDS CONFIRMATION)\"\n  },\n\n  \"Maleeha\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Stylist: £12.21/hour, no commission\"\n  },\n\n  \"Faiza\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Stylist: £12.21/hour, no commission (RATE NEEDS CONFIRMATION)\"\n  },\n\n  \"Jouman\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Stylist: £12.21/hour, no commission (RATE NEEDS CONFIRMATION)\"\n  },\n\n  \"Karena\": {\n    paymentType: \"hourly_only\",\n    changes: [{ effectiveDate: \"2025-01-01\", hourlyRate: 12.21 }],\n    description: \"Stylist: £12.21/hour, no commission (RATE NEEDS CONFIRMATION)\"\n  }\n};\n\n// --- FIXED TIERED COMMISSION CALCULATION ---\nfunction calculateTieredCommission(totalSales, conditions) {\n  // Fixed tier structure based on your specification\n  const tiers = [\n    { threshold: 0, rate: 0.22, max: 600 },      // £0-£600 @ 22%\n    { threshold: 600, rate: 0.24, max: 1000 },   // £600-£1000 @ 24%\n    { threshold: 1000, rate: 0.25, max: 1600 },  // £1000-£1600 @ 25%\n    { threshold: 1600, rate: 0.26, max: Infinity } // £1600+ @ 26%\n  ];\n\n  let commission = 0;\n  \n  for (const tier of tiers) {\n    if (totalSales <= tier.threshold) {\n      break; // No sales in this tier\n    }\n    \n    // Calculate sales amount in this tier\n    const salesInTier = Math.min(totalSales, tier.max) - tier.threshold;\n    \n    if (salesInTier > 0) {\n      commission += salesInTier * tier.rate;\n    }\n  }\n  \n  return commission;\n}\n\n// Calculate pay for each employee/day\nfunction calculateEmployeePayment(employeeName, records) {\n  const employee = EMPLOYEE_CONDITIONS[employeeName];\n  if (!employee) return records;\n\n  const latestConditions = employee.changes[employee.changes.length - 1];\n\n  return records.map((record) => {\n    const updated = { ...record };\n\n    if (employee.paymentType === \"hourly_only\" || employee.paymentType === \"manager\") {\n      const hourly = (record.Hours || 0) * latestConditions.hourlyRate;\n      updated.HrlyRate = latestConditions.hourlyRate;\n      updated.Base = hourly;                 // daily hourly pay\n      updated.Commission = 0;               // no commission for these roles\n      updated.PaymentType = \"HourlyOnly\";\n      return updated;\n    }\n\n    if (employee.paymentType === \"tiered_commission\" && employeeName === \"Tuba\") {\n      const totalSales = (record.Sales || 0) + (record.AddlSales || 0);\n      const hourlyPay  = (record.Hours || 0) * latestConditions.hourlyRate;\n      const commission = totalSales > 0 ? calculateTieredCommission(totalSales, latestConditions) : 0;\n\n      // Store daily figures ONLY; monthly max will be applied later in the formatter\n      updated.HrlyRate   = latestConditions.hourlyRate;\n      updated.Base       = hourlyPay;      // daily hourly amount\n      updated.Commission = commission;     // daily commission\n      updated.PaymentType = \"MonthlyMaxLater\";\n      return updated;\n    }\n\n    return updated;\n  });\n}\n\n// Group by employee\nconst byEmployee = {};\nfor (const item of items) {\n  const rec = item.json;\n  const emp = rec.Employee || \"Unknown\";\n  (byEmployee[emp] ||= []).push(rec);\n}\n\n// Process each group\nfor (const [emp, recs] of Object.entries(byEmployee)) {\n  const updated = calculateEmployeePayment(emp, recs);\n  updated.forEach(r => processedItems.push({ json: r }));\n}\n\nconsole.log(`✅ Processed payment conditions for ${Object.keys(byEmployee).length} PYT employees`);\n\nreturn processedItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -352
+      ],
+      "id": "c2ff54d4-8b03-43a5-ab5d-0aceba42e579",
+      "name": "payment conditions"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Build Emails for Each Employee (PYT) - With Advance & Invoice Total ===\n\nconst rows = $items().map(i => i.json);\n\n// Helpers\nconst toNumber = (v) => {\n  if (v == null || v === \"\") return 0;\n  if (typeof v === \"number\") return v;\n  const cleaned = String(v).replace(/[£,\\s]/g, \"\").trim();\n  const parsed = parseFloat(cleaned);\n  return isNaN(parsed) ? 0 : parsed;\n};\n\nconst currency = (n) => `£${(Number(n) || 0).toFixed(2)}`;\n\n// Group by employee\nconst groups = [];\nlet current = null;\nfor (const r of rows) {\n  if (r.Field && r.Field.startsWith(\"Employee:\")) {\n    if (current) groups.push(current);\n    current = { employee: r.Field.replace(\"Employee:\", \"\").trim(), rows: [] };\n  }\n  if (current) current.rows.push(r);\n}\nif (current) groups.push(current);\n\nconst out = [];\n\n// Process each employee\nfor (const g of groups) {\n  const emp = g.employee;\n  const gr = g.rows;\n\n  // Filter daily rows (only positive hours)\n  const daily = gr.filter(r => {\n    const hasDate = r.Date && r.Date !== \"\" && r.Date !== \"Date\";\n    const hours = toNumber(r.Hours);\n    const hasValidHours = !isNaN(hours) && hours > 0;\n    return hasDate && hasValidHours;\n  });\n\n  // Build summary lookup\n  const S = {};\n  for (const r of gr) {\n    if (r.Field && r.Field.trim()) {\n      S[r.Field.trim()] = r.Value;\n    }\n  }\n\n  // Month label\n  let label = \"Unknown\";\n  if (daily.length > 0) {\n    try {\n      const d = new Date(daily[0].Date);\n      if (!isNaN(d.getTime())) {\n        label = d.toLocaleString(\"en-GB\", { month: \"long\", year: \"numeric\" });\n      }\n    } catch (e) {\n      console.log(`Warning: Could not parse date for ${emp}`);\n    }\n  }\n\n  // Extract values from summary\n  const daysWorked = toNumber(S[\"Worked Days\"]);\n  const totalHours = toNumber(S[\"Worked Hours\"]);\n  const hourlyRate = toNumber(S[\"Rate per Hour\"]);\n  const hoursSalary = toNumber(S[\"Hours Salary\"]);\n  const bonus = toNumber(S[\"TOTAL BONUS\"]) || toNumber(S[\"Bonus\"]);\n  const hoursPlusBonus = toNumber(S[\"Hours + Bonus\"]);\n\n  const totalSales = toNumber(S[\"Sales\"]);\n  const addlSales = toNumber(S[\"Addl Sales\"]);\n  const adjustedSales = toNumber(S[\"Adjusted Sales\"]);\n  const avgPerDay = toNumber(S[\"Avg Sale / Day\"]);\n\n  // Determine final payment (amount after advance – what they get now)\n  const finalPay = (() => {\n    if (S[\"Total Payment\"]) return toNumber(S[\"Total Payment\"]);\n    if (S[\"FINAL PAY\"]) return toNumber(S[\"FINAL PAY\"]);\n    return hoursPlusBonus || hoursSalary;\n  })();\n\n  // 🔹 Advance & Invoice Total\n  const advanceDeductionRaw = S[\"Advance Deduction\"] || 0; // eg \"-£350.00\"\n  const advance = Math.abs(toNumber(advanceDeductionRaw)); // positive value\n  const grossPay = advance > 0 ? finalPay + advance : finalPay; // invoice total\n  const remainingToPay = finalPay; // what you transfer this month\n\n  // Build bonus breakdown HTML\n  let bonusBreakdownHtml = \"\";\n  if (bonus > 0) {\n    bonusBreakdownHtml = `\n    <tr style=\"background: #f0f8ff; font-weight: bold; border-top: 2px solid #4caf50;\">\n      <td colspan=\"2\" style=\"padding: 12px 8px;\">\n        🎁 BONUS BREAKDOWN\n      </td>\n    </tr>`;\n\n    const bonusLines = [\n      { label: \"Daily Sales Bonus\", field: \"Daily Sales Bonus\" },\n      { label: \"First/Last Hour Bonus\", field: \"First/Last Hour Bonus\" },\n      { label: \"Social Media Bonus\", field: \"Social Media Bonus\" },\n      { label: \"Management Bonus\", field: \"Management Bonus\" },\n      { label: \"Mgmt Consistency Bonus\", field: \"Mgmt Consistency Bonus\" },\n      { label: \"Transport/Fuel\", field: \"Transport/Fuel\" },\n      { label: \"Personal Sales Bonus\", field: \"Personal Sales Bonus\" },\n      { label: \"Extra Bonus\", field: \"Extra Bonus\" },\n    ];\n\n    for (const line of bonusLines) {\n      const found = gr.find(r => r.Field && r.Field.includes(line.field));\n      if (found && toNumber(found.Value) > 0) {\n        bonusBreakdownHtml += `\n        <tr>\n          <td style=\"padding-left: 20px;\"><em>${line.label}:</em></td>\n          <td class=\"amount\">${currency(toNumber(found.Value))}</td>\n        </tr>`;\n      }\n    }\n\n    bonusBreakdownHtml += `\n    <tr style=\"background: #e8f5e8; font-weight: bold;\">\n      <td><strong>TOTAL BONUS:</strong></td>\n      <td class=\"amount\">${currency(bonus)}</td>\n    </tr>`;\n  }\n\n  // Build daily table HTML\n  const dailyRowsHtml = daily\n    .map(r => {\n      const date = new Date(r.Date);\n      const dateStr = !isNaN(date.getTime())\n        ? date.toLocaleDateString(\"en-GB\")\n        : r.Date;\n\n      return `\n    <tr>\n      <td class=\"left\">${dateStr}</td>\n      <td>${toNumber(r.Hours).toFixed(2)}</td>\n      <td>${currency(toNumber(r.Sales))}</td>\n      <td class=\"amount\">${currency(toNumber(r.Base))}</td>\n    </tr>`;\n    })\n    .join(\"\");\n\n  // Email recipients\n  const RECIPIENTS = {\n    Codruta: \"codruta.maris@hotmail.com\",\n    Eshaal: \"eshaal.awan@hotmail.com\",\n    Fatima: \"Fatimazulficar786@gmail.com\",\n    Alina: \"alinajunaidj@gmail.com\",\n    Jude: \"jude.omer.elmahdi@gmail.com\",\n    Katelyn: \"katelynharnett1@hotmail.com\",\n    Adam: \"codruta.maris@hotmail.com\",\n    Lucy: \"Lucy.lancaster4045@gmail.com\",\n    Gia: \"giabella@memfy.uk.com\",\n    Misha: \"misha2u@icloud.com\",\n    Monica: \"monica.nadeem@icloud.com\",\n    Cesaltina: \"silvacesaltina2@gmail.com\",\n    Talya: \"talyaxelmahdi@gmail.com\",\n    Temitope: \"temitopeoguns15@gmail.com\",\n    Zoya: \"zoyaasim291704@gmail.com\",\n  };\n  const to = RECIPIENTS[emp] || \"codruta.maris@hotmail.com\";\n\n  const totalLabel =\n    advance > 0\n      ? \"Your Remaining Payment (after advance)\"\n      : \"Your Total Payment\";\n\n  // Build HTML email\n  const html = `\n<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>Monthly Breakdown Summary - PYT</title>\n<style>\n  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; }\n  .header { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: #fff; padding: 20px; border-radius: 8px 8px 0 0; }\n  .content { background: #f9f9f9; padding: 20px; }\n  .summary-box { background: #fff; border-radius: 8px; padding: 15px; margin: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }\n  .highlight { background: #e8f5e8; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; border-radius: 4px; }\n  .footer { background: #f1f1f1; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; font-size: 12px; color: #666; }\n  table { width: 100%; border-collapse: collapse; margin: 12px 0; }\n  th, td { padding: 8px; border-bottom: 1px solid #eee; text-align: center; }\n  th { background: #f2f2f2; font-weight: bold; }\n  .left { text-align: left; }\n  .amount { font-weight: bold; color: #2e7d32; }\n  .employee-name { font-size: 22px; margin: 0; }\n  .month-title { font-size: 16px; margin: 5px 0 0 0; opacity: 0.9; }\n  .summary-box table td:first-child { text-align: left; }\n</style></head>\n<body>\n  <p>Hi ${emp},</p>\n  <p>Please see below your breakdown, kindly send your invoice as soon as possible.<br><br>No chasing email will be sent, please be responsible.<br><br>Many thanks,<br>Mirela</p>\n  \n  <div class=\"header\">\n    <h1 class=\"employee-name\">${emp} — Breakdown Summary</h1>\n    <p class=\"month-title\">${label} - PYT</p>\n  </div>\n  \n  <div class=\"content\">\n    <div class=\"highlight\">\n      <h3>💰 ${totalLabel}: <span class=\"amount\">${currency(finalPay)}</span></h3>\n      ${\n        advance > 0\n          ? `<p style=\"margin:4px 0 0 0;font-size:13px;\">(This is the amount remaining to pay <strong>this month</strong> after your advance.)</p>`\n          : \"\"\n      }\n    </div>\n    \n    <div class=\"summary-box\">\n      <h3>📊 Monthly Overview</h3>\n      <table>\n        <tr><td><strong>Days Worked:</strong></td><td class=\"amount\">${daysWorked} days</td></tr>\n        <tr><td><strong>Total Hours:</strong></td><td class=\"amount\">${totalHours.toFixed(2)} hours</td></tr>\n        <tr><td><strong>Hourly Rate:</strong></td><td class=\"amount\">${currency(hourlyRate)}</td></tr>\n        <tr><td><strong>Hours Salary:</strong></td><td class=\"amount\">${currency(hoursSalary)}</td></tr>\n        ${bonusBreakdownHtml}\n        ${bonus > 0 ? `<tr><td><strong>Hours + Bonus:</strong></td><td class=\"amount\">${currency(hoursPlusBonus)}</td></tr>` : \"\"}\n        ${\n          advance > 0\n            ? `\n        <tr><td colspan=\"2\" style=\"padding-top:12px;\"><strong>🧾 Payment Summary (for Invoice)</strong></td></tr>\n        <tr><td>Invoice Total (advance + remaining):</td><td class=\"amount\">${currency(grossPay)}</td></tr>\n        <tr><td>Advance already paid:</td><td class=\"amount\">${currency(advance)}</td></tr>\n        <tr><td>Remaining to pay now:</td><td class=\"amount\">${currency(remainingToPay)}</td></tr>\n        `\n            : \"\"\n        }\n      </table>\n    </div>\n    \n    <div class=\"summary-box\">\n      <h3>🛍️ Sales Performance</h3>\n      <table>\n        <tr><td><strong>Total Sales:</strong></td><td class=\"amount\">${currency(totalSales)}</td></tr>\n        <tr><td><strong>Additional Sales:</strong></td><td class=\"amount\">${currency(addlSales)}</td></tr>\n        <tr><td><strong>Adjusted Sales:</strong></td><td class=\"amount\">${currency(adjustedSales)}</td></tr>\n        <tr><td><strong>Average per Day:</strong></td><td class=\"amount\">${currency(avgPerDay)}</td></tr>\n      </table>\n    </div>\n    \n    <div class=\"summary-box\">\n      <h3>📅 Daily Breakdown</h3>\n      <table>\n        <thead><tr><th class=\"left\">Date</th><th>Hours</th><th>Sales</th><th>Daily Pay</th></tr></thead>\n        <tbody>${dailyRowsHtml}</tbody>\n      </table>\n    </div>\n    \n    <div class=\"summary-box\">\n      <h3>📝 Important Notes</h3>\n      <ul>\n        <li>This summary covers ${label}.</li>\n        <li>Your <strong>invoice total</strong> should be for <strong>${currency(\n          grossPay\n        )}</strong> (advance + remaining).</li>\n        <li>Payment will be processed after you submit the invoice to <strong>pythairstyleco@gmail.com</strong>.</li>\n      </ul>\n    </div>\n    \n    <p>Thank you for your hard work and dedication! 🌟</p>\n  </div>\n  \n  <div class=\"footer\">\n    <p><strong>PYT Hairstyle</strong></p>\n    <p><em>This is an automated breakdown summary. Please keep for your records.</em></p>\n  </div>\n</body></html>`.trim();\n\n  out.push({\n    json: {\n      Employee: emp,\n      Subject: `${emp} — ${label} (Breakdown Summary) - PYT`,\n      Html: html,\n      To: to,\n    },\n  });\n}\n\nconsole.log(`\\n✅ Generated ${out.length} email(s) with advance + invoice totals`);\nreturn out;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        -448
+      ],
+      "id": "9318d118-727a-4d0f-b962-151a0eea2098",
+      "name": "build email for each employee"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $items().map(i => i.json);\n\n// Find Tuba's section\nconst startIndex = rows.findIndex(r => r.Field === \"Employee: Tuba\");\nif (startIndex === -1) return [];\n\nlet tubaRows = [];\nfor (let i = startIndex; i < rows.length; i++) {\n  if (rows[i].Field && rows[i].Field.startsWith(\"Employee:\") && i !== startIndex) break;\n  tubaRows.push(rows[i]);\n}\n\nreturn tubaRows.map(r => ({ json: r }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -160
+      ],
+      "id": "98916bab-08e2-4776-9ba9-1d387bae80f8",
+      "name": "filter Tuba"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Build Tuba's Special Email (PYT) - With Advance & Invoice Total ===\n\nconst rows = $items().map(i => i.json);\n\n// Find Tuba's section\nconst startIndex = rows.findIndex(r => r.Field === \"Employee: Tuba\");\nif (startIndex === -1) {\n  return [{\n    json: {\n      To: \"tubaraja7@outlook.com\",\n      Subject: \"Tuba Payroll — No data\",\n      Html: \"<p>No records found for Tuba.</p>\"\n    }\n  }];\n}\n\n// Collect Tuba's rows\nlet tubaRows = [];\nfor (let i = startIndex; i < rows.length; i++) {\n  if (rows[i].Field && rows[i].Field.startsWith(\"Employee:\") && i !== startIndex) break;\n  tubaRows.push(rows[i]);\n}\n\n// Helpers\nfunction getEmpVal(label) {\n  const row = tubaRows.find(r => r.Field === label);\n  return row ? row.Value : \"\";\n}\n\nconst toNumber = (val) =>\n  parseFloat(String(val).replace(/[£,]/g, \"\")) || 0;\nconst currency = (n) => `£${(Number(n) || 0).toFixed(2)}`;\n\n// Daily rows\nconst dailyRows = tubaRows.filter(r => r.Date && r.Hours);\n\n// Month label\nlet label = \"Unknown\";\nif (dailyRows.length) {\n  const d = new Date(dailyRows[0].Date);\n  label = d.toLocaleString(\"en-GB\", { month: \"long\", year: \"numeric\" });\n}\n\n// Summary values\nconst workedDays      = getEmpVal(\"Worked Days\");\nconst workedHours     = getEmpVal(\"Worked Hours\");\nconst totalHourlyPay  = getEmpVal(\"Hours Salary\");\nconst totalCommission = getEmpVal(\"Total Commission\");\nconst finalPay        = getEmpVal(\"FINAL PAY\");\n\n// Numeric versions\nconst numHourly = toNumber(totalHourlyPay);\nconst numComm   = toNumber(totalCommission);\nconst finalPayNum = toNumber(finalPay);\n\n// Advance & invoice total\nconst advanceDeductionRaw = getEmpVal(\"Advance Deduction\") || 0; // \"-£1500.00\" etc\nconst advance = Math.abs(toNumber(advanceDeductionRaw));\nconst grossPayNum = advance > 0 ? finalPayNum + advance : finalPayNum; // invoice total\nconst remainingToPayNum = finalPayNum;\n\n// Which method is higher\nlet methodNote = \"\";\nlet methodColor = \"black\";\nif (numComm > numHourly) {\n  methodNote = \"Commission higher\";\n  methodColor = \"green\";\n} else if (numHourly > numComm) {\n  methodNote = \"Hourly higher\";\n  methodColor = \"blue\";\n} else {\n  methodNote = \"Equal\";\n  methodColor = \"orange\";\n}\n\n// Get total bonus\nconst bonusRaw = getEmpVal(\"TOTAL BONUS\") || getEmpVal(\"Bonus\") || 0;\nconst bonusNum = toNumber(bonusRaw);\n\n// Build bonus breakdown HTML\nlet bonusBreakdownHtml = \"\";\nif (bonusNum > 0) {\n  bonusBreakdownHtml = `\n  <div style=\"background: #f0f8ff; padding: 12px; border-left: 4px solid #4caf50; margin: 10px 0; border-radius: 4px;\">\n    <h4 style=\"margin-top: 0;\">🎁 Bonus Breakdown</h4>`;\n\n  const bonusLines = [\n    { label: \"Daily Sales Bonus\", field: \"Daily Sales Bonus\" },\n    { label: \"First/Last Hour Bonus\", field: \"First/Last Hour Bonus\" },\n    { label: \"Social Media Bonus\", field: \"Social Media Bonus\" },\n    { label: \"Management Bonus\", field: \"Management Bonus\" },\n    { label: \"Mgmt Consistency Bonus\", field: \"Mgmt Consistency Bonus\" },\n    { label: \"Transport/Fuel\", field: \"Transport/Fuel\" },\n    { label: \"Personal Sales Bonus\", field: \"Personal Sales Bonus\" },\n    { label: \"Extra Bonus\", field: \"Extra Bonus\" }\n  ];\n\n  for (const line of bonusLines) {\n    const found = tubaRows.find(r => r.Field && r.Field.includes(line.field));\n    if (found && toNumber(found.Value) > 0) {\n      bonusBreakdownHtml += `\n      <p style=\"margin: 5px 0;\"><strong>${line.label}:</strong> ${currency(toNumber(found.Value))}</p>`;\n    }\n  }\n\n  bonusBreakdownHtml += `\n    <p style=\"margin: 10px 0 0 0; font-weight: bold; font-size: 16px;\">\n      <strong>TOTAL BONUS:</strong> <span style=\"color: #2e7d32;\">${currency(bonusNum)}</span>\n    </p>\n  </div>`;\n}\n\n// Build daily table rows\nconst dailyHtml = dailyRows.map(r => `\n  <tr>\n    <td>${r.Date}</td>\n    <td>${r.Hours}</td>\n    <td>£${parseFloat(r.Sales||0).toFixed(2)}</td>\n    <td>£${parseFloat(r.AddlSales||0).toFixed(2)}</td>\n    <td>£${parseFloat(r.HrlyRate||0).toFixed(2)}</td>\n    <td>£${parseFloat(r.Base||0).toFixed(2)}</td>\n    <td><strong>£${parseFloat(r.Commission||0).toFixed(2)}</strong></td>\n  </tr>\n`).join(\"\");\n\n// Build email HTML\nconst html = `\n<!DOCTYPE html><html><head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>Tuba's Monthly Breakdown - PYT</title>\n<style>\n  body { font-family: Arial, sans-serif; color:#333; max-width:900px; margin:0 auto; line-height: 1.6; }\n  .header { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color: #fff; padding: 20px; border-radius: 8px 8px 0 0; }\n  .content { background: #f9f9f9; padding: 20px; }\n  .summary-box { background: #fff; border-radius: 8px; padding: 15px; margin: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }\n  .highlight { background: #e8f5e8; padding: 15px; border-left: 4px solid #4caf50; margin: 15px 0; border-radius: 4px; }\n  .footer { background: #f1f1f1; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; font-size: 12px; color: #666; }\n  \n  table { width:100%; border-collapse:collapse; margin-top:15px; text-align:center; }\n  th, td { border-bottom:1px solid #ddd; padding:8px; }\n  th { background:#f2f2f2; font-weight: bold; }\n  .amount { font-weight:bold; color:#2e7d32; }\n  .employee-name { font-size: 24px; margin: 0; }\n  .month-title { font-size: 16px; margin: 5px 0 0 0; opacity: 0.9; }\n</style>\n</head><body>\n  <p>Hi Tuba,</p>\n  <p>\n    Please see below your ${label} breakdown, kindly send your invoice as soon as possible.<br><br>\n    No chasing email will be sent, please be responsible.<br><br>\n    Many thanks,<br>\n    Mirela\n  </p>\n\n  <div class=\"header\">\n    <h1 class=\"employee-name\">Tuba — Breakdown Summary</h1>\n    <p class=\"month-title\">${label} - PYT Hairstyle</p>\n  </div>\n\n  <div class=\"content\">\n    <div class=\"highlight\">\n      <h3>💰 Your Remaining Payment (after advance): <span class=\"amount\">${finalPay}</span></h3>\n      <p style=\"margin: 5px 0 0 0; font-size: 14px;\">\n        <span style=\"color:${methodColor};font-weight:bold\">(${methodNote})</span>\n      </p>\n    </div>\n\n    <div class=\"summary-box\">\n      <h3>📊 Monthly Overview</h3>\n      <table style=\"text-align: left;\">\n        <tr><td style=\"width: 60%;\"><strong>Days Worked:</strong></td><td class=\"amount\">${workedDays}</td></tr>\n        <tr><td><strong>Total Hours:</strong></td><td class=\"amount\">${workedHours}</td></tr>\n        <tr><td><strong>Total Hourly Pay:</strong></td><td class=\"amount\">${totalHourlyPay}</td></tr>\n        <tr><td><strong>Total Commission:</strong></td><td class=\"amount\">${totalCommission}</td></tr>\n        ${\n          advance > 0\n            ? `\n        <tr><td colspan=\"2\" style=\"padding-top:12px;\"><strong>🧾 Payment Summary (for Invoice)</strong></td></tr>\n        <tr><td>Invoice Total (advance + remaining):</td><td class=\"amount\">${currency(grossPayNum)}</td></tr>\n        <tr><td>Advance already paid:</td><td class=\"amount\">${currency(advance)}</td></tr>\n        <tr><td>Remaining to pay now:</td><td class=\"amount\">${currency(remainingToPayNum)}</td></tr>\n        `\n            : \"\"\n        }\n      </table>\n    </div>\n\n    ${bonusBreakdownHtml}\n\n    <div class=\"summary-box\">\n      <h3>📅 Daily Breakdown</h3>\n      <table>\n        <thead>\n          <tr>\n            <th>Date</th>\n            <th>Hours</th>\n            <th>Sales</th>\n            <th>Addl</th>\n            <th>Rate</th>\n            <th>Hourly £</th>\n            <th>Commission £</th>\n          </tr>\n        </thead>\n        <tbody>\n          ${dailyHtml}\n        </tbody>\n      </table>\n    </div>\n\n    <div class=\"summary-box\">\n      <h3>📝 Important Notes</h3>\n      <ul>\n        <li>This summary covers ${label}.</li>\n        <li>Your <strong>invoice total</strong> should be for <strong>${currency(\n          grossPayNum\n        )}</strong> (advance + remaining).</li>\n        <li>Your payment is calculated as the <strong>higher of hourly pay or commission</strong> (monthly comparison).</li>\n        <li>Payment will be processed after you submit the invoice at <strong>pythairstyleco@gmail.com</strong>.</li>\n      </ul>\n    </div>\n\n    <p>Thank you for your hard work and dedication! 🌟</p>\n  </div>\n\n  <div class=\"footer\">\n    <p><strong>PYT Hairstyle</strong></p>\n    <p><em>This is an automated breakdown summary. Please keep for your records.</em></p>\n  </div>\n</body></html>\n`;\n\n// Return one email for Tuba\nreturn [{\n  json: {\n    To: \"tubaraja7@outlook.com\",\n    Subject: `Tuba — ${label} Breakdown Summary - PYT`,\n    Html: html\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        -160
+      ],
+      "id": "d2502610-b56f-4cac-8b51-dea27b579034",
+      "name": "build Tuba's email"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $items().map(i => i.json);\nconst filtered = [];\nlet inTubaSection = false;\n\nfor (const r of rows) {\n  // Entering Tuba's section\n  if (r.Field && r.Field.startsWith(\"Employee: Tuba\")) {\n    inTubaSection = true;\n    continue; // Skip this row\n  }\n  \n  // Entering a different employee's section (exit Tuba)\n  if (r.Field && r.Field.startsWith(\"Employee:\") && !r.Field.startsWith(\"Employee: Tuba\")) {\n    inTubaSection = false;\n  }\n  \n  // Only include rows NOT in Tuba's section\n  if (!inTubaSection) {\n    filtered.push({ json: r });\n  }\n}\n\nconsole.log(`Original: ${rows.length} rows, After filtering Tuba: ${filtered.length} rows`);\nreturn filtered;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -448
+      ],
+      "id": "5f94e565-b6de-4d75-9427-aecb84b7ca50",
+      "name": "filter out Tuba"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.To }}",
+        "subject": "={{ $json.Subject }}",
+        "message": "={{ $json.Html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2240,
+        -352
+      ],
+      "id": "c228b7da-6e3b-4bfb-b87f-61509c27b59a",
+      "name": "send breakdown emails for hourly",
+      "webhookId": "be404f63-6f2a-4b6a-86b4-224155ddd551",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "FXBiJzFQ5smFT2Uc",
+          "name": "pythairstyleco@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.To }}",
+        "subject": "={{ $json.Subject }}",
+        "message": "={{ $json.Html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2240,
+        -160
+      ],
+      "id": "2c013a2f-8e73-4d00-a5cd-426248256168",
+      "name": "send breakdown email for tuba",
+      "webhookId": "a8c5d185-e8cf-43c4-822e-a9a65f0d6b2b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "FXBiJzFQ5smFT2Uc",
+          "name": "pythairstyleco@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5a00c32d-e50c-4ca6-8d42-126719d01482",
+              "leftValue": "={{ $json.Employee }}",
+              "rightValue": "Lucy",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        2240,
+        -544
+      ],
+      "id": "1f0bbe3a-8ff3-4b85-8380-e4bfbeffe851",
+      "name": "Filter",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.To }}",
+        "subject": "={{ $json.Subject }} Revised",
+        "message": "={{ $json.Html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2464,
+        -544
+      ],
+      "id": "befde389-aa32-4eed-8b0c-25c1f3e43c56",
+      "name": "send breakdown emails for hourly individually",
+      "webhookId": "7b7b5336-ed46-4950-bea1-1d37cff85484",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "FXBiJzFQ5smFT2Uc",
+          "name": "pythairstyleco@gmail.com"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "parse csv",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parse csv": {
+      "main": [
+        [
+          {
+            "node": "employee name mapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "employee name mapper": {
+      "main": [
+        [
+          {
+            "node": "payment conditions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "format employee full": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "payment conditions": {
+      "main": [
+        [
+          {
+            "node": "format employee full",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "build email for each employee": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "send breakdown emails for hourly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter Tuba": {
+      "main": [
+        [
+          {
+            "node": "build Tuba's email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "build Tuba's email": {
+      "main": [
+        [
+          {
+            "node": "send breakdown email for tuba",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter out Tuba": {
+      "main": [
+        [
+          {
+            "node": "build email for each employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "send breakdown emails for hourly individually",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dea7ead8-4339-4206-bd03-7ed1ff54e51d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aebeac476a1acfcf90b4162e732ed3266fe85da6cef0bb017b9556c9c58fe307"
+  },
+  "id": "pz1qPMD1qHjuBhGn",
+  "tags": []
+}

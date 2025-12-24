@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      AI Customer Support Intelligence Dashboard - Project Presentation
+    </title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        color: #e2e8f0;
+        overflow-x: hidden;
+      }
+
+      .slideshow-container {
+        position: relative;
+        max-width: 1200px;
+        margin: auto;
+        padding: 40px 20px;
+      }
+
+      .slide {
+        display: none;
+        animation: fadeIn 0.5s;
+        background: rgba(26, 32, 44, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 60px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        min-height: 600px;
+      }
+
+      .slide.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font-size: 3.5em;
+        background: linear-gradient(135deg, #60a5fa, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 30px;
+        font-weight: 700;
+      }
+
+      h2 {
+        font-size: 2.5em;
+        color: #60a5fa;
+        margin-bottom: 30px;
+        border-bottom: 3px solid #60a5fa;
+        padding-bottom: 15px;
+      }
+
+      h3 {
+        font-size: 1.8em;
+        color: #a78bfa;
+        margin-top: 30px;
+        margin-bottom: 15px;
+      }
+
+      p {
+        font-size: 1.3em;
+        line-height: 1.8;
+        margin-bottom: 20px;
+        color: #cbd5e0;
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      li {
+        font-size: 1.2em;
+        padding: 15px 20px;
+        margin: 10px 0;
+        background: rgba(96, 165, 250, 0.1);
+        border-left: 4px solid #60a5fa;
+        border-radius: 8px;
+        color: #e2e8f0;
+      }
+
+      li:before {
+        content: "✓ ";
+        color: #60a5fa;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-top: 30px;
+      }
+
+      .feature-card {
+        background: rgba(96, 165, 250, 0.1);
+        padding: 30px;
+        border-radius: 15px;
+        border: 2px solid rgba(96, 165, 250, 0.3);
+      }
+
+      .feature-card h4 {
+        font-size: 1.5em;
+        color: #60a5fa;
+        margin-bottom: 15px;
+      }
+
+      .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 30px;
+      }
+
+      .tech-badge {
+        background: linear-gradient(135deg, #60a5fa, #a78bfa);
+        color: #1a202c;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1.1em;
+      }
+
+      .workflow-step {
+        background: rgba(167, 139, 250, 0.1);
+        padding: 25px;
+        margin: 20px 0;
+        border-radius: 15px;
+        border-left: 5px solid #a78bfa;
+      }
+
+      .workflow-step h4 {
+        color: #a78bfa;
+        font-size: 1.4em;
+        margin-bottom: 10px;
+      }
+
+      .navigation {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 15px;
+        z-index: 1000;
+      }
+
+      .nav-btn {
+        background: rgba(96, 165, 250, 0.8);
+        color: #1a202c;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        background: #60a5fa;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(96, 165, 250, 0.4);
+      }
+
+      .slide-counter {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: rgba(26, 32, 44, 0.9);
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 1em;
+        color: #cbd5e0;
+      }
+
+      .highlight {
+        color: #60a5fa;
+        font-weight: 600;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        margin: 30px 0;
+      }
+
+      .stat-card {
+        background: rgba(96, 165, 250, 0.15);
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        border: 2px solid rgba(96, 165, 250, 0.3);
+      }
+
+      .stat-number {
+        font-size: 3em;
+        color: #60a5fa;
+        font-weight: 700;
+      }
+
+      .stat-label {
+        font-size: 1.2em;
+        color: #cbd5e0;
+        margin-top: 10px;
+      }
+
+      .architecture-diagram {
+        background: rgba(167, 139, 250, 0.1);
+        padding: 30px;
+        border-radius: 15px;
+        margin: 30px 0;
+        border: 2px solid rgba(167, 139, 250, 0.3);
+      }
+
+      .architecture-diagram h4 {
+        color: #a78bfa;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+      }
+
+      .flow-item {
+        padding: 15px;
+        margin: 10px 0;
+        background: rgba(96, 165, 250, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid #60a5fa;
+      }
+
+      .flow-arrow {
+        text-align: center;
+        font-size: 2em;
+        color: #a78bfa;
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slideshow-container">
+      <!-- Slide 1: Title -->
+      <div class="slide active">
+        <h1>📧 AI Customer Support Intelligence Dashboard</h1>
+        <p style="font-size: 1.8em; margin-top: 40px; color: #a78bfa">
+          A Collaborative Project
+        </p>
+        <p style="font-size: 1.4em; margin-top: 60px; color: #cbd5e0">
+          Intelligent email review system powered by AI<br />
+          Built for PYT Hair Style & Opatra/Ville Beauty
+        </p>
+        <div style="margin-top: 80px; font-size: 1.2em; color: #60a5fa">
+          <p>✨ Transforming customer support with AI-powered insights</p>
+        </div>
+      </div>
+
+      <!-- Slide 2: Project Overview -->
+      <div class="slide">
+        <h2>🎯 Project Overview</h2>
+        <p style="font-size: 1.4em; margin-bottom: 40px">
+          A sophisticated web application that enables customer support teams to
+          review, approve, and improve AI-generated email responses before
+          they're sent to customers.
+        </p>
+
+        <h3>Key Objectives</h3>
+        <ul>
+          <li>
+            Streamline the email review process for customer support staff
+          </li>
+          <li>Provide AI-powered quality scoring and risk assessment</li>
+          <li>Enable continuous learning through feedback collection</li>
+          <li>
+            Support multiple brands (PYT Hair Style & Opatra/Ville Beauty)
+          </li>
+          <li>
+            Integrate seamlessly with existing workflows via Airtable & n8n
+          </li>
+        </ul>
+      </div>
+
+      <!-- Slide 3: Key Features -->
+      <div class="slide">
+        <h2>✨ Key Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h4>🤖 AI-Powered Insights</h4>
+            <p>
+              Automatic quality scoring, risk level assessment, and confidence
+              metrics for each AI-generated response
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>📊 Real-Time Dashboard</h4>
+            <p>
+              Live metrics showing email counts, brand distribution, and
+              processing statistics
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>🔍 Advanced Filtering</h4>
+            <p>
+              Filter by status, brand, email type, risk level, and search
+              functionality
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>📝 Feedback System</h4>
+            <p>
+              Comprehensive feedback collection with quality ratings, pattern
+              tags, and improvement notes
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>⚡ Quick Actions</h4>
+            <p>
+              Approve & send, reject & rewrite, escalate to management, or
+              request AI regeneration
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>🔄 Learning Integration</h4>
+            <p>
+              Feedback automatically saved to Learning Data table for AI model
+              improvement
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Technical Architecture -->
+      <div class="slide">
+        <h2>🏗️ Technical Architecture</h2>
+        <div class="architecture-diagram">
+          <h4>System Components</h4>
+          <div class="flow-item">
+            <strong>Frontend:</strong> Vanilla JavaScript, HTML5, CSS3 with
+            modern UI/UX
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <strong>Backend API:</strong> Vercel Serverless Functions (Node.js)
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <strong>Data Storage:</strong> Airtable (Customer Interactions &
+            Learning Data tables)
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-item">
+            <strong>Workflow Automation:</strong> n8n webhooks for email
+            sending, escalation, and AI rewriting
+          </div>
+        </div>
+
+        <h3>API Endpoints</h3>
+        <ul>
+          <li>
+            <span class="highlight">/api/airtable</span> - Fetch customer
+            interactions
+          </li>
+          <li>
+            <span class="highlight">/api/feedback</span> - Submit feedback and
+            update Learning Data
+          </li>
+          <li>
+            <span class="highlight">/api/send-email</span> - Approve and send
+            emails
+          </li>
+          <li>
+            <span class="highlight">/api/escalate</span> - Escalate cases to
+            management
+          </li>
+          <li>
+            <span class="highlight">/api/rewrite-response</span> - Request AI to
+            regenerate responses
+          </li>
+        </ul>
+      </div>
+
+      <!-- Slide 5: Workflow -->
+      <div class="slide">
+        <h2>🔄 Workflow Process</h2>
+
+        <div class="workflow-step">
+          <h4>1. Email Ingestion</h4>
+          <p>
+            Customer emails are processed by AI and stored in Airtable with
+            draft responses
+          </p>
+        </div>
+
+        <div class="workflow-step">
+          <h4>2. Dashboard Review</h4>
+          <p>
+            Support staff access the dashboard to review pending emails with
+            AI-generated responses
+          </p>
+        </div>
+
+        <div class="workflow-step">
+          <h4>3. Quality Assessment</h4>
+          <p>
+            AI provides quality scores, risk levels, and confidence metrics to
+            guide review decisions
+          </p>
+        </div>
+
+        <div class="workflow-step">
+          <h4>4. Action & Feedback</h4>
+          <p>
+            Staff can approve, reject, escalate, or provide feedback. All
+            actions are tracked in Learning Data
+          </p>
+        </div>
+
+        <div class="workflow-step">
+          <h4>5. Continuous Improvement</h4>
+          <p>Feedback loops back to improve AI model performance over time</p>
+        </div>
+      </div>
+
+      <!-- Slide 6: Technologies Used -->
+      <div class="slide">
+        <h2>🛠️ Technology Stack</h2>
+
+        <h3>Frontend</h3>
+        <div class="tech-stack">
+          <span class="tech-badge">HTML5</span>
+          <span class="tech-badge">CSS3</span>
+          <span class="tech-badge">Vanilla JavaScript</span>
+          <span class="tech-badge">Modern CSS Grid</span>
+          <span class="tech-badge">Responsive Design</span>
+        </div>
+
+        <h3>Backend & Infrastructure</h3>
+        <div class="tech-stack">
+          <span class="tech-badge">Vercel Serverless</span>
+          <span class="tech-badge">Node.js</span>
+          <span class="tech-badge">Airtable API</span>
+          <span class="tech-badge">n8n Webhooks</span>
+          <span class="tech-badge">RESTful API</span>
+        </div>
+
+        <h3>Data & Integration</h3>
+        <div class="tech-stack">
+          <span class="tech-badge">Airtable Database</span>
+          <span class="tech-badge">Webhook Integration</span>
+          <span class="tech-badge">CORS Support</span>
+          <span class="tech-badge">Environment Variables</span>
+        </div>
+      </div>
+
+      <!-- Slide 7: Key Capabilities -->
+      <div class="slide">
+        <h2>🚀 Key Capabilities</h2>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-number">Multi-Brand</div>
+            <div class="stat-label">
+              Support for multiple brands in one dashboard
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">Real-Time</div>
+            <div class="stat-label">Live updates and filtering</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">AI-Powered</div>
+            <div class="stat-label">Intelligent quality assessment</div>
+          </div>
+        </div>
+
+        <h3>Advanced Features</h3>
+        <ul>
+          <li>Email search and navigation with jump-to functionality</li>
+          <li>Pattern tag system for categorizing feedback themes</li>
+          <li>Side-by-side comparison view for original vs. AI response</li>
+          <li>Progress tracking with completion percentages</li>
+          <li>Export functionality for analytics and reporting</li>
+          <li>Draft saving and restoration capabilities</li>
+          <li>Comprehensive error handling and user feedback</li>
+        </ul>
+      </div>
+
+      <!-- Slide 8: Impact & Benefits -->
+      <div class="slide">
+        <h2>📈 Impact & Benefits</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h4>⚡ Efficiency</h4>
+            <p>
+              Streamlined review process reduces time per email while
+              maintaining quality standards
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>📊 Data-Driven</h4>
+            <p>
+              Comprehensive feedback collection enables continuous AI model
+              improvement
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>🎯 Quality Control</h4>
+            <p>
+              Multi-level review with AI insights ensures appropriate responses
+              before customer delivery
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>🔄 Scalability</h4>
+            <p>Serverless architecture handles varying workloads seamlessly</p>
+          </div>
+          <div class="feature-card">
+            <h4>🔗 Integration</h4>
+            <p>Seamless integration with existing Airtable and n8n workflows</p>
+          </div>
+          <div class="feature-card">
+            <h4>👥 User-Friendly</h4>
+            <p>
+              Intuitive interface designed for support staff with minimal
+              training required
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9: Technical Highlights -->
+      <div class="slide">
+        <h2>💻 Technical Highlights</h2>
+
+        <h3>Architecture Decisions</h3>
+        <ul>
+          <li>
+            <span class="highlight">Serverless Functions:</span> Cost-effective,
+            scalable API endpoints on Vercel
+          </li>
+          <li>
+            <span class="highlight">Airtable Integration:</span> Flexible data
+            structure with easy updates and queries
+          </li>
+          <li>
+            <span class="highlight">Webhook Pattern:</span> Decoupled
+            architecture for email sending and AI processing
+          </li>
+          <li>
+            <span class="highlight">Client-Side Filtering:</span> Fast,
+            responsive filtering without additional API calls
+          </li>
+          <li>
+            <span class="highlight">CORS Support:</span> Cross-origin
+            compatibility for flexible deployment
+          </li>
+        </ul>
+
+        <h3>Code Quality</h3>
+        <ul>
+          <li>Comprehensive error handling and logging</li>
+          <li>Modular, maintainable code structure</li>
+          <li>Extensive inline documentation</li>
+          <li>Graceful degradation for missing features</li>
+          <li>Optimized for performance and user experience</li>
+        </ul>
+      </div>
+
+      <!-- Slide 10: Future Enhancements -->
+      <div class="slide">
+        <h2>🔮 Future Enhancements</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <h4>📱 Mobile App</h4>
+            <p>Native mobile application for on-the-go email reviews</p>
+          </div>
+          <div class="feature-card">
+            <h4>📊 Analytics Dashboard</h4>
+            <p>
+              Advanced analytics and reporting for quality trends and patterns
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>🔔 Notifications</h4>
+            <p>
+              Real-time notifications for high-priority emails and escalations
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>🤖 AI Enhancements</h4>
+            <p>
+              More sophisticated AI models trained on collected feedback data
+            </p>
+          </div>
+          <div class="feature-card">
+            <h4>👥 Team Features</h4>
+            <p>Collaborative reviews, comments, and team performance metrics</p>
+          </div>
+          <div class="feature-card">
+            <h4>🌐 Multi-Language</h4>
+            <p>Support for multiple languages and regional customizations</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 11: Conclusion -->
+      <div class="slide">
+        <h1>🎉 Thank You!</h1>
+        <p style="font-size: 1.6em; margin-top: 60px; color: #a78bfa">
+          A collaborative project showcasing modern web development practices
+        </p>
+
+        <div style="margin-top: 80px">
+          <h3 style="color: #60a5fa">Key Achievements</h3>
+          <ul style="margin-top: 30px">
+            <li>Full-stack application with seamless integrations</li>
+            <li>Production-ready code with comprehensive error handling</li>
+            <li>User-centered design focused on support staff needs</li>
+            <li>Scalable architecture ready for growth</li>
+            <li>Continuous learning system for AI improvement</li>
+          </ul>
+        </div>
+
+        <p style="font-size: 1.4em; margin-top: 80px; color: #cbd5e0">
+          Ready to transform customer support workflows! 🚀
+        </p>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <button class="nav-btn" onclick="changeSlide(-1)">← Previous</button>
+      <button class="nav-btn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <div class="slide-counter">
+      <span id="current-slide">1</span> / <span id="total-slides">11</span>
+    </div>
+
+    <script>
+      let currentSlide = 0;
+      const slides = document.querySelectorAll(".slide");
+      const totalSlides = slides.length;
+
+      document.getElementById("total-slides").textContent = totalSlides;
+
+      function showSlide(n) {
+        if (n >= totalSlides) currentSlide = 0;
+        if (n < 0) currentSlide = totalSlides - 1;
+
+        slides.forEach((slide) => slide.classList.remove("active"));
+        slides[currentSlide].classList.add("active");
+
+        document.getElementById("current-slide").textContent = currentSlide + 1;
+      }
+
+      function changeSlide(n) {
+        currentSlide += n;
+        showSlide(currentSlide);
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") changeSlide(-1);
+        if (e.key === "ArrowRight") changeSlide(1);
+      });
+
+      // Initialize
+      showSlide(0);
+    </script>
+  </body>
+</html>

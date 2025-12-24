@@ -1,0 +1,471 @@
+{
+  "name": "pyt salaries with csv report",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -912,
+        -16
+      ],
+      "id": "42eaa936-2730-4034-9adb-0702f01860b9",
+      "name": "start"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "12xjyJt0W9WpIpvELCDvcpQC0J9n2zBWl",
+          "mode": "list",
+          "cachedResultName": "pyt_november.csv",
+          "cachedResultUrl": "https://drive.google.com/file/d/12xjyJt0W9WpIpvELCDvcpQC0J9n2zBWl/view?usp=drivesdk"
+        },
+        "options": {
+          "binaryPropertyName": "hoursFile"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -688,
+        -16
+      ],
+      "id": "7fe6ff81-52f1-4d9e-bed1-be9e502c29ea",
+      "name": "hours csv",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "N9O7q6jvu9vpPv9c",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "hoursFile",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -16
+      ],
+      "id": "a32615a7-ba93-460f-8a3c-76341c68971e",
+      "name": "hours JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "let currentEmployee = null;\nconst cleaned = [];\n\nfunction excelDateToJSDate(serial) {\n  const utc_days = Math.floor(serial - 25569);\n  const utc_value = utc_days * 86400;\n  const date_info = new Date(utc_value * 1000);\n  return date_info.toISOString().split(\"T\")[0];\n}\n\nfunction excelTimeToString(time) {\n  const totalSeconds = Math.round(time * 24 * 60 * 60);\n  const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');\n  const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');\n  return `${hours}:${minutes}`;\n}\n\nconsole.log(`📋 Starting to parse ${items.length} CSV rows...`);\n\nfor (const item of items) {\n  const row = item.json;\n  const keys = Object.keys(row);\n  const firstValue = row[keys[0]];\n\n  // One-time patch for the first row where employee name is a key, not a value\n  if (!currentEmployee && keys[0].startsWith('Employee:')) {\n    const nameParts = keys[0].split(':')[1].trim().split(/\\s+/);\n    currentEmployee = nameParts.join(' ');\n    console.log(`👤 Found employee in key: ${currentEmployee}`);\n  }\n\n  // Detect new employee section from value like \"Employee: Athul\"\n  if (firstValue && typeof firstValue === 'string' && firstValue.startsWith('Employee:')) {\n    const nameParts = firstValue.split(':')[1].trim().split(/\\s+/);\n    currentEmployee = nameParts.join(' ');\n    console.log(`👤 Found employee in value: ${currentEmployee}`);\n    continue;\n  }\n\n  // If Hours isn't a number, skip\n  const hoursVal = parseFloat(row['__EMPTY_2']);\n  if (isNaN(hoursVal)) {\n    continue;\n  }\n\n  // Keep only: normal rows with times OR adjustment rows (negative hours) even without times\n  const hasTimes = !!row['__EMPTY'] && !!row['__EMPTY_1'];\n  if (!hasTimes && Math.abs(hoursVal) > 1) {\n    if (currentEmployee === \"Katelyn\") {\n      console.log(`❌ SKIPPING Katelyn: ${hoursVal}h without times (abs > 1)`);\n    }\n    continue;\n  }\n\n  // Skip headers/totals\n  if (\n    firstValue === 'Date' ||\n    firstValue === 'Group Totals' ||\n    hoursVal > 24\n  ) {\n    if (currentEmployee === \"Katelyn\" && hoursVal > 24) {\n      console.log(`❌ SKIPPING Katelyn total row: ${hoursVal}h`);\n    }\n    continue;\n  }\n\n  // Log Katelyn records being included\n  if (currentEmployee === \"Katelyn\") {\n    const dateStr = excelDateToJSDate(row[keys[0]]);\n    console.log(`✅ INCLUDING Katelyn: ${dateStr} - ${hoursVal}h, £${parseFloat(row['__EMPTY_5']) || 0} sales`);\n  }\n\n  // Push cleaned and formatted row\n  cleaned.push({\n    json: {\n      Employee: currentEmployee,\n      Date: excelDateToJSDate(row[keys[0]]),\n      TimeIn: hasTimes ? excelTimeToString(row['__EMPTY']) : \"\",\n      TimeOut: hasTimes ? excelTimeToString(row['__EMPTY_1']) : \"\",\n      Hours: hoursVal,\n      Lunch: parseFloat(row['__EMPTY_3']) || 0,\n      SalesGoal: parseFloat(row['__EMPTY_4']) || 0,\n      Sales: parseFloat(row['__EMPTY_5']) || 0,\n      AddlSales: parseFloat(row['__EMPTY_6']) || 0,\n      HrlyRate: parseFloat(row['__EMPTY_7']) || 0,\n      Base: parseFloat(row['__EMPTY_8']) || 0,\n    }\n  });\n}\n\nconsole.log(`📊 Parse CSV completed:`);\nconsole.log(`   Original rows: ${items.length}`);\nconsole.log(`   Cleaned rows: ${cleaned.length}`);\n\nreturn cleaned;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "171f1dee-ddd4-4cc9-8d50-3e9b6615e39a",
+      "name": "parse hours csv"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === CALCULATE EMPLOYEE PAYMENTS - FIXED FOR MULTIPLE RECORDS PER DAY ===\n\nconst records = $items().map(i => i.json);\nconsole.log(`Processing ${records.length} raw parsed records`);\n\n// Employee configurations\nconst EMPLOYEE_CONFIGS = {\n  \"Alina\": { paymentType: \"hourly_only\", hourlyRate: 12.50 },\n  \"Rimsha\": { paymentType: \"hourly_only\", hourlyRate: 12.21 },\n  \"Temitope\": { paymentType: \"hourly_only\", hourlyRate: 12.21 },\n  \"Zoya\": { paymentType: \"hourly_only\", hourlyRate: 12.21 },\n  \"Bucola\": { paymentType: \"hourly_only\", hourlyRate: 12.21 },\n  \"Fatima\": { paymentType: \"hourly_only\", hourlyRate: 10.00 },\n  \"Jude\": { paymentType: \"hourly_only\", hourlyRate: 10.00 },\n  \"Katelyn\": { paymentType: \"hourly_only\", hourlyRate: 10.00 },\n  \"Talya\": { paymentType: \"hourly_only\", hourlyRate: 10.00 },\n  \"Katie\": { paymentType: \"hourly_only\", hourlyRate: 10.00 },\n  \"Aleeza\": { paymentType: \"hourly_only\", hourlyRate: 10.00 },\n  \"Eiman\": { paymentType: \"hourly_only\", hourlyRate: 7.55 },\n  \"Eshaal\": { paymentType: \"hourly_only\", hourlyRate: 7.55 },\n  \"Misha\": { paymentType: \"hourly_only\", hourlyRate: 7.55 },\n  \"Monica\": { paymentType: \"hourly_only\", hourlyRate: 7.55 },\n  \"Codruta\": { paymentType: \"manager\", hourlyRate: 0, excludeFromPayroll: true },\n  \"Adam\": { paymentType: \"manager\", hourlyRate: 0, excludeFromPayroll: true },\n  \"Tuba\": { paymentType: \"tiered_commission\", hourlyRate: 12.21 },\n  \"Lucy\": { paymentType: \"hourly_only\", hourlyRate: 12.21 },\n  \"Cesaltina\": { paymentType: \"hourly_only\", hourlyRate: 10.00 },\n  \"Anah\": { paymentType: \"hourly_only\", hourlyRate: 10.00 },\n  \"Gia\": { paymentType: \"hourly_only\", hourlyRate: 10.00 }\n};\n\n// Tiered commission calculation\nfunction calculateTieredCommission(totalSales) {\n  const tiers = [\n    { threshold: 0, rate: 0.22, max: 600 },\n    { threshold: 600, rate: 0.24, max: 1000 },\n    { threshold: 1000, rate: 0.25, max: 1600 },\n    { threshold: 1600, rate: 0.26, max: Infinity }\n  ];\n\n  let commission = 0;\n  for (const tier of tiers) {\n    if (totalSales <= tier.threshold) break;\n    const tierMax = tier.max === Infinity ? totalSales : Math.min(totalSales, tier.max);\n    const salesInTier = tierMax - tier.threshold;\n    if (salesInTier > 0) commission += salesInTier * tier.rate;\n  }\n  return commission;\n}\n\nconst toNum = v => (v === null || v === undefined ? 0 : Number(v) || 0);\nconst EPS = 1e-6;\n\n// STEP 1: Apply payment conditions to each record\nconst processedRecords = [];\nfor (const record of records) {\n  const emp = record.Employee;\n  const config = EMPLOYEE_CONFIGS[emp];\n  \n  if (!config) {\n    processedRecords.push(record);\n    continue;\n  }\n  \n  const updatedRecord = { ...record };\n  \n  if (config.paymentType === \"hourly_only\" || config.paymentType === \"manager\") {\n    const hourly = toNum(record.Hours) * config.hourlyRate;\n    updatedRecord.HrlyRate = config.hourlyRate;\n    updatedRecord.Base = hourly;\n    updatedRecord.Commission = 0;\n    updatedRecord.PaymentType = \"HourlyOnly\";\n  } else if (config.paymentType === \"tiered_commission\" && emp === \"Tuba\") {\n    const totalSales = toNum(record.Sales) + toNum(record.AddlSales);\n    const hourlyPay = toNum(record.Hours) * config.hourlyRate;\n    const commission = totalSales > 0 ? calculateTieredCommission(totalSales) : 0;\n    \n    updatedRecord.HrlyRate = config.hourlyRate;\n    updatedRecord.Base = hourlyPay;\n    updatedRecord.Commission = commission;\n    updatedRecord.PaymentType = \"MonthlyMaxLater\";\n  }\n  \n  processedRecords.push(updatedRecord);\n}\n\n// STEP 2: Group by employee\nconst employeeData = {};\nfor (const record of processedRecords) {\n  const emp = record.Employee;\n  if (!emp) continue;\n  \n  if (!employeeData[emp]) {\n    employeeData[emp] = { allRecords: [] };\n  }\n  \n  employeeData[emp].allRecords.push(record);\n}\n\n// STEP 3: Calculate aggregates - FIXED to match daily_breakdown exactly\nconst employeeResults = {};\nlet totalShopSales = 0;\nlet totalShopSalaries = 0;\n\nfor (const [name, data] of Object.entries(employeeData)) {\n  const config = EMPLOYEE_CONFIGS[name];\n  if (!config) continue;\n  \n  // Use ALL records, not just filtered ones\n  const allRecords = data.allRecords;\n  \n  // Filter for display/aggregation: rows where Hours !== 0\n  const dailyRowsWithData = allRecords.filter(r => toNum(r.Hours) !== 0);\n  \n  let totalSales = 0, totalAddl = 0, totalHours = 0, totalCommission = 0, hourlyRate = 0;\n  \n  // Sum from dailyRowsWithData (this includes negatives and small positives)\n  for (const r of dailyRowsWithData) {\n    const hrs = toNum(r.Hours);\n    totalSales += toNum(r.Sales);\n    totalAddl += toNum(r.AddlSales);\n    totalHours += hrs; // includes all non-zero values\n    totalCommission += toNum(r.Commission);\n    const hr = toNum(r.HrlyRate);\n    if (hr) hourlyRate = hr;\n  }\n  \n  // Calculate worked days: unique dates where SUM(hours for that date) > 0\n  // Use ALL records for this calculation\n  const hoursByDate = {};\n  for (const r of allRecords) {\n    if (!r.Date) continue;\n    hoursByDate[r.Date] = (hoursByDate[r.Date] || 0) + toNum(r.Hours);\n  }\n  const workedDays = Object.values(hoursByDate).filter(h => h > EPS).length;\n  \n  const adjustedSales = totalSales + totalAddl;\n  totalShopSales += adjustedSales;\n  \n  // Debug logging for Katelyn\n  if (name === \"Katelyn\") {\n    console.log(`\\nKATELYN DEBUG:`);\n    console.log(`  Total records: ${allRecords.length}`);\n    console.log(`  Records with Hours !== 0: ${dailyRowsWithData.length}`);\n    console.log(`  Unique dates: ${Object.keys(hoursByDate).length}`);\n    console.log(`  Worked days (hours > 0): ${workedDays}`);\n    console.log(`  Total hours: ${totalHours.toFixed(2)}`);\n    console.log(`  Total sales: £${totalSales.toFixed(2)}`);\n    console.log(`  Hours by date:`);\n    Object.entries(hoursByDate).sort().forEach(([date, hours]) => {\n      console.log(`    ${date}: ${hours.toFixed(2)}h`);\n    });\n  }\n  \n  // Calculate final payment\n  let basePayment = 0;\n  let salesCommission = 0;\n  let finalTotal = 0;\n  \n  if (config.excludeFromPayroll) {\n    employeeResults[name] = {\n      workedDays, totalHours, totalSales, totalAddl, adjustedSales,\n      basePayment: 0, salesCommission: 0, finalTotal: 0,\n      config, isManager: true\n    };\n    continue;\n  }\n  \n  if (config.paymentType === \"tiered_commission\" && name === \"Tuba\") {\n    const hourlyTotal = totalHours * config.hourlyRate;\n    \n    if (totalCommission > hourlyTotal) {\n      salesCommission = totalCommission;\n      finalTotal = totalCommission;\n    } else {\n      basePayment = hourlyTotal;\n      finalTotal = hourlyTotal;\n    }\n  } else {\n    basePayment = totalHours * config.hourlyRate;\n    finalTotal = basePayment;\n  }\n  \n  totalShopSalaries += finalTotal;\n  \n  employeeResults[name] = {\n    workedDays, totalHours, totalSales, totalAddl, adjustedSales,\n    basePayment, salesCommission, finalTotal,\n    config, isManager: false\n  };\n  \n  console.log(`${name}: ${workedDays} days, ${totalHours.toFixed(2)}h, £${adjustedSales.toFixed(2)} sales, £${finalTotal.toFixed(2)} pay`);\n}\n\n// STEP 4: Create output rows\nconst allRows = [];\n\nallRows.push({\n  Employee: \"Employee\", Period: \"Period\", PaymentType: \"Payment Type\",\n  WorkedDays: \"Worked Days\", WorkedHours: \"Worked Hours\", HourlyRate: \"Hourly Rate\",\n  SalesPercentage: \"Sales %\", BasePayment: \"Base Payment\", TotalSales: \"Total Sales\",\n  AddlSales: \"Addl Sales\", AdjustedSales: \"Adjusted Sales\", SalesCommission: \"Sales Commission\",\n  BonusPayment: \"Bonus Payment\", FinalTotal: \"Final Total Payment\", AvgSalesPerDay: \"Avg Sales/Day\",\n  AvgSalesPerHour: \"Avg Sales/Hour\", Description: \"Pay Structure Description\",\n  ConfigVersion: \"Config Version\", SalaryToSalesPct: \"Salary vs Own Sales %\",\n  SalesShareOfShop: \"Sales Share of Shop %\", SalaryShareOfShop: \"Salary Share of Shop %\"\n});\n\nfor (const [name, result] of Object.entries(employeeResults)) {\n  const avgSalesPerDay = result.workedDays > 0 ? result.adjustedSales / result.workedDays : 0;\n  const avgSalesPerHour = result.totalHours > 0 ? result.adjustedSales / result.totalHours : 0;\n  const salesShare = totalShopSales > 0 ? (result.adjustedSales / totalShopSales) * 100 : 0;\n  const salaryShare = !result.isManager && totalShopSalaries > 0 ? (result.finalTotal / totalShopSalaries) * 100 : 0;\n  const salaryToOwnSales = !result.isManager && result.adjustedSales > 0 ? (result.finalTotal / result.adjustedSales) * 100 : 0;\n  \n  allRows.push({\n    Employee: name,\n    Period: \"2025-09\",\n    PaymentType: result.isManager ? \"MANAGER\" : result.config.paymentType.toUpperCase().replace(/_/g, \" \"),\n    WorkedDays: result.workedDays.toString(),\n    WorkedHours: result.totalHours.toFixed(2),\n    HourlyRate: result.isManager ? \"N/A\" : `£${result.config.hourlyRate.toFixed(2)}`,\n    SalesPercentage: result.config.paymentType === \"tiered_commission\" ? \"Tiered\" : \"N/A\",\n    BasePayment: `£${result.basePayment.toFixed(2)}`,\n    TotalSales: `£${result.totalSales.toFixed(2)}`,\n    AddlSales: `£${result.totalAddl.toFixed(2)}`,\n    AdjustedSales: `£${result.adjustedSales.toFixed(2)}`,\n    SalesCommission: `£${result.salesCommission.toFixed(2)}`,\n    BonusPayment: `£0.00`,\n    FinalTotal: result.isManager ? \"£0.00 - PAYROLL SEPARATE\" : `£${result.finalTotal.toFixed(2)}`,\n    AvgSalesPerDay: `£${avgSalesPerDay.toFixed(2)}`,\n    AvgSalesPerHour: `£${avgSalesPerHour.toFixed(2)}`,\n    Description: result.config.paymentType === \"hourly_only\" ? `£${result.config.hourlyRate}/hour` :\n                 result.config.paymentType === \"tiered_commission\" ? \"Tiered commission vs hourly\" : \"Manager\",\n    ConfigVersion: \"2025-v1\",\n    SalaryToSalesPct: result.isManager ? \"0.00%\" : `${salaryToOwnSales.toFixed(2)}%`,\n    SalesShareOfShop: `${salesShare.toFixed(2)}%`,\n    SalaryShareOfShop: result.isManager ? \"0.00%\" : `${salaryShare.toFixed(2)}%`\n  });\n}\n\nconst shopEfficiency = totalShopSales > 0 ? (totalShopSalaries / totalShopSales * 100) : 0;\nallRows.push({\n  Employee: \"SHOP_METRICS\",\n  Period: \"2025-09\",\n  AdjustedSales: `£${totalShopSales.toFixed(2)}`,\n  FinalTotal: `£${totalShopSalaries.toFixed(2)}`,\n  Description: `Shop efficiency: ${shopEfficiency.toFixed(2)}%`,\n  SalaryToSalesPct: `${shopEfficiency.toFixed(2)}%`\n});\n\nconsole.log(`\\nCompleted: £${totalShopSales.toFixed(2)} sales, £${totalShopSalaries.toFixed(2)} salaries`);\n\nreturn allRows.map(row => ({ json: row }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -16
+      ],
+      "id": "f627761e-f842-473f-b089-3b05c096046a",
+      "name": "calculate employee payments"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1VlQ9JRTSCdtIyxbh-AffUawdAIEgZw33W_poq1X6R5s",
+          "mode": "list",
+          "cachedResultName": "pyt_salary_breakdown",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VlQ9JRTSCdtIyxbh-AffUawdAIEgZw33W_poq1X6R5s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 358647962,
+          "mode": "list",
+          "cachedResultName": "november",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VlQ9JRTSCdtIyxbh-AffUawdAIEgZw33W_poq1X6R5s/edit#gid=358647962"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Employee",
+              "displayName": "Employee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Period",
+              "displayName": "Period",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PaymentType",
+              "displayName": "PaymentType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "WorkedDays",
+              "displayName": "WorkedDays",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "WorkedHours",
+              "displayName": "WorkedHours",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "HourlyRate",
+              "displayName": "HourlyRate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SalesPercentage",
+              "displayName": "SalesPercentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "BasePayment",
+              "displayName": "BasePayment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "TotalSales",
+              "displayName": "TotalSales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AddlSales",
+              "displayName": "AddlSales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AdjustedSales",
+              "displayName": "AdjustedSales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SalesCommission",
+              "displayName": "SalesCommission",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "BonusPayment",
+              "displayName": "BonusPayment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FinalTotal",
+              "displayName": "FinalTotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AvgSalesPerDay",
+              "displayName": "AvgSalesPerDay",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AvgSalesPerHour",
+              "displayName": "AvgSalesPerHour",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ConfigVersion",
+              "displayName": "ConfigVersion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SalaryToSalesPct",
+              "displayName": "SalaryToSalesPct",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SalesShareOfShop",
+              "displayName": "SalesShareOfShop",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SalaryShareOfShop",
+              "displayName": "SalaryShareOfShop",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "DataIssues",
+              "displayName": "DataIssues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        656,
+        -16
+      ],
+      "id": "2afbc115-73d4-44f9-8216-0c874a96356a",
+      "name": "payment breakdown sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wI9ETcooYaqdbWBR",
+          "name": "marius.nicorescu85@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== EMPLOYEE NAME MAPPER FOR PYTHAIR =====\n// Replace ALL code in \"employee name mapper\" node with this:\n\nconst inputItems = $items();\nconst processedItems = [];\n\nconsole.log(`👥 Processing ${inputItems.length} records for name mapping`);\n\n// 🎨 PYTHAIR EMPLOYEE NAME MAPPING - Based on your actual data\nconst NAME_MAPPING = {\n  // Your actual employees from the CSV:\n  \"aiyla, akhtar\": \"Aiyla\",\n  \"aiyla akhtar\": \"Aiyla\", \n  \"aiyla\": \"Aiyla\",\n  \n  \"codruta, nicorescu\": \"Codruta\",\n  \"codruta nicorescu\": \"Codruta\",\n  \"codruta\": \"Codruta\",\n  \n  \"eiman, eiman\": \"Eiman\",\n  \"eiman\": \"Eiman\",\n  \n  \"eshaal, awan\": \"Eshaal\",\n  \"eshaal awan\": \"Eshaal\",\n  \"eshaal\": \"Eshaal\",\n  \n  \"faiza, zulficar\": \"Faiza\",\n  \"faiza zulficar\": \"Faiza\",\n  \"faiza\": \"Faiza\",\n  \n  \"fatima, zulficar\": \"Fatima\",\n  \"fatima zulficar\": \"Fatima\",\n  \"fatima\": \"Fatima\",\n  \n  \"hasseb, alina\": \"Alina\",\n  \"hasseb alina\": \"Alina\",\n  \"hasseb\": \"Alina\",\n  \n  \"jouman\": \"Jouman\",\n  \n  \"jude, elsidiq\": \"Jude\",\n  \"jude elsidiq\": \"Jude\",\n  \"jude\": \"Jude\",\n  \n  \"karena, karena\": \"Karena\",\n  \"karena\": \"Karena\",\n  \n  \"katelyn, harnett\": \"Katelyn\",\n  \"katelyn harnett\": \"Katelyn\",\n  \"katelyn\": \"Katelyn\",\n  \n  \"katie, katie\": \"Katie\",\n  \"katie\": \"Katie\",\n  \n  \"lee, adam\": \"Adam\",\n  \"lee adam\": \"Adam\",\n  \"lee\": \"Adam\",\n  \n  \"makeel, rimsha\": \"Rimsha\",\n  \"makeel rimsha\": \"Rimsha\",\n  \"makeel\": \"Rimsha\",\n  \n  \"misha, misha\": \"Misha\",\n  \"misha\": \"Misha\",\n  \n  \"temitope, t\": \"Temitope\",\n  \"temitope\": \"Temitope\",\n  \n  \"tuba, raja\": \"Tuba\",\n  \"tuba raja\": \"Tuba\",\n  \"tuba\": \"Tuba\",\n  \n  \"zoya, julani\": \"Zoya\",\n  \"zoya julani\": \"Zoya\",\n  \"zoya\": \"Zoya\",\n\n  \"aleeza, waseem\": \"Aleeza\",\n  \"aleeza waseem\": \"Aleeza\", \n  \"aleeza\": \"Aleeza\",\n  \n  \"maleeha, ali\": \"Maleeha\",\n  \"maleeha ali\": \"Maleeha\",\n  \"maleeha\": \"Maleeha\",\n\n  \"Salami\": \"Bucola\",\n  \"Salami Bucola\": \"Bucola\",\n  \"salami\": \"Bucola\",\n  \"salami bucola\": \"Bucola\",\n  \"bucola salami\": \"Bucola\",\n  \"salami, bucola\": \"Bucola\",\n  \n  \n  \"Nadeem Monica\": \"Monica\",\n  \"nadeem monica\": \"Monica\",\n  \"monica nadeem\": \"Monica\",\n  \"nadeem\": \"Monica\",\n  \"Nadeem\": \"Monica\",\n  \"nadeem, monica\": \"Monica\",\n\n  \"Lucy\": \"Lucy\",\n  \"Lucy Lucy\": \"Lucy\",\n  \"lucy lucy\": \"Lucy\",\n  \"lucy\": \"Lucy\",\n  \"lucy, lucy\": \"Lucy\",\n\n  \n  \"Silva Cesaltina\": \"Cesaltina\",\n  \"silva cesaltina\": \"Cesaltina\",\n  \"cesaltina silva\": \"Cesaltina\",\n  \"Silva\": \"Cesaltina\",\n  \"silva\": \"Cesaltina\",\n  \"silva, cesaltina\": \"Cesaltina\",\n\n  \"Kassam Anah\": \"Anah\",\n  \"kassam anah\": \"Anah\",\n  \"anah kassam\": \"Anah\",\n  \"Kassam\": \"Anah\",\n  \"kassam\": \"Anah\",\n  \"kassam, anah\": \"Anah\",\n\n  \"Memfy Gia\": \"Gia\",\n  \"memfy gia\": \"Gia\",\n  \"gia memfy\": \"Gia\",\n  \"Memfy\": \"Gia\",\n  \"memfy\": \"Gia\",\n  \"memfy, gia\": \"Gia\",\n  \n};\n\n// 🚫 EXCLUDE PATTERNS for PYTHairstyle\nconst EXCLUDE_PATTERNS = [\n  \"test\", \"TEST\", \"demo\", \"DEMO\", \"training\", \"TRAINING\",\n  \"admin\", \"ADMIN\", \"manager\", \"MANAGER\", \"owner\", \"OWNER\", \"debug\", \"DEBUG\"\n];\n\nfunction mapEmployeeName(originalName) {\n  if (!originalName || typeof originalName !== 'string') {\n    return null;\n  }\n  \n  const trimmedName = originalName.trim();\n  \n  // Check exclusion patterns\n  if (EXCLUDE_PATTERNS.some(pattern => \n    trimmedName.toLowerCase().includes(pattern.toLowerCase())\n  )) {\n    console.log(`⚠️ EXCLUDING: \"${trimmedName}\" - matches exclude pattern`);\n    return null;\n  }\n  \n  // Direct mapping (case insensitive)\n  const lowerName = trimmedName.toLowerCase();\n  if (NAME_MAPPING[lowerName]) {\n    console.log(`✅ MAPPED: \"${trimmedName}\" → \"${NAME_MAPPING[lowerName]}\"`);\n    return NAME_MAPPING[lowerName];\n  }\n  \n  // Partial matching for longer names\n  for (const [key, value] of Object.entries(NAME_MAPPING)) {\n    if (key.length > 2 && lowerName.includes(key)) {\n      console.log(`✅ MAPPED (partial): \"${trimmedName}\" → \"${value}\"`);\n      return value;\n    }\n  }\n  \n  // Keep original if no mapping found\n  console.log(`❓ NO MAPPING: \"${trimmedName}\" - keeping original`);\n  return trimmedName;\n}\n\nconst mappingStats = {\n  totalProcessed: 0,\n  totalMapped: 0,\n  totalExcluded: 0,\n  uniqueEmployees: new Set()\n};\n\nfor (const item of inputItems) {\n  const record = item.json;\n  mappingStats.totalProcessed++;\n  \n  if (record.Employee) {\n    const originalName = record.Employee;\n    const mappedName = mapEmployeeName(originalName);\n    \n    if (mappedName === null) {\n      mappingStats.totalExcluded++;\n      continue; // Skip this record\n    }\n    \n    record.Employee = mappedName;\n    mappingStats.uniqueEmployees.add(mappedName);\n    \n    if (originalName !== mappedName) {\n      mappingStats.totalMapped++;\n    }\n  }\n  \n  processedItems.push({ json: record });\n}\n\nconsole.log(`\\n📊 PYTHAIR NAME MAPPING SUMMARY:`);\nconsole.log(`   Records processed: ${mappingStats.totalProcessed}`);\nconsole.log(`   Records kept: ${processedItems.length}`);\nconsole.log(`   Names mapped: ${mappingStats.totalMapped}`);\nconsole.log(`   Records excluded: ${mappingStats.totalExcluded}`);\n\nconst finalStaff = Array.from(mappingStats.uniqueEmployees).sort();\nconsole.log(`\\n👥 PYTHAIR STAFF (${finalStaff.length}):`);\nfinalStaff.forEach(name => console.log(`   • ${name}`));\n\nreturn processedItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        -16
+      ],
+      "id": "822af086-3c18-4782-a1e1-c98e6ffebf85",
+      "name": "employee name mapper"
+    },
+    {
+      "parameters": {
+        "jsCode": "// === MANUAL BONUS INJECTION NODE ===\n// Add this as a new Code Node between \"calculate employee payments\" and \"payment breakdown sheet\"\n\nconst items = $items();\nconsole.log(`🎁 Starting bonus injection with ${items.length} items`);\n\n// 🎁 MANUAL BONUSES - EDIT THIS SECTION TO ADD/REMOVE BONUSES\nconst MANUAL_BONUSES = {\n  // Format: \"EmployeeName\": { amount: bonus_amount, reason: \"description\" }\n  \"Tuba\": { amount: 361.72, reason: \"sales performance\" },\n  \"Eshaal\": { amount: 125, reason: \"sales performance\" },\n  \"Jude\": { amount: 95, reason: \"sales performance\" },\n  \"Katelyn\": { amount: 125, reason: \"sales performance\" },\n  \"Misha\": { amount: 115, reason: \"sales performance\" },\n  \"Talya\": { amount: 25, reason: \"sales performance\" },\n  \"Temitope\": { amount: 120, reason: \"sales performance\" },\n  \"Zoya\": { amount: 290, reason: \"sales performance\" },\n  \"Rimsha\": { amount: 0, reason: \"sales performance\" },\n  \"Fatima\": { amount: 265, reason: \"sales performance\" },\n  \"Alina\": { amount: 30, reason: \"sales performance\" },\n  \"Monica\": { amount: 170, reason: \"sales performance\" },\n  \"Lucy\": { amount: 75, reason: \"sales performance\" },\n};\n\n// 🔧 SAFE CURRENCY PARSING\nfunction safeParseCurrency(value) {\n  if (!value || value === null || value === undefined) return 0;\n  \n  let cleanValue = value.toString()\n    .replace(/[£$,\\s]/g, '')\n    .replace(/[^\\d.,\\-]/g, '')\n    .trim();\n  \n  if (!cleanValue || cleanValue === '' || cleanValue === '-') return 0;\n  \n  const parsed = parseFloat(cleanValue);\n  return isNaN(parsed) ? 0 : parsed;\n}\n\n// 🔧 FORMAT CURRENCY\nfunction formatCurrency(amount) {\n  return `£${amount.toFixed(2)}`;\n}\n\n// Process each item and add manual bonuses\nconst processedItems = [];\nlet totalManualBonuses = 0;\nlet employeesWithBonuses = 0;\n\nfor (const item of items) {\n  const record = item.json;\n  \n  // Skip header rows and summary rows\n  if (record.Employee === \"Employee\" || \n      record.Employee === \"SHOP_METRICS\" || \n      record.Employee === \"TOTAL_SUMMARY\" ||\n      !record.Employee) {\n    processedItems.push(item);\n    continue;\n  }\n  \n  // Check if this employee has a manual bonus\n  const manualBonus = MANUAL_BONUSES[record.Employee];\n  let bonusAmount = 0;\n  let bonusReason = \"\";\n  \n  if (manualBonus && manualBonus.amount > 0) {\n    bonusAmount = manualBonus.amount;\n    bonusReason = manualBonus.reason;\n    totalManualBonuses += bonusAmount;\n    employeesWithBonuses++;\n    \n    console.log(`🎁 Adding bonus to ${record.Employee}: £${bonusAmount} - ${bonusReason}`);\n  }\n  \n  // Parse the current final total\n  const currentFinalTotal = safeParseCurrency(record.FinalTotal);\n  const newFinalTotal = currentFinalTotal + bonusAmount;\n  \n  // Parse existing bonus payment and add manual bonus\n  const existingBonus = safeParseCurrency(record.BonusPayment);\n  const totalBonusPayment = existingBonus + bonusAmount;\n  \n  // Create enhanced record with updated bonus information\n  const enhancedRecord = {\n    ...record,\n    BonusPayment: formatCurrency(totalBonusPayment), // Update existing BonusPayment column\n    FinalTotal: formatCurrency(newFinalTotal), // Update final total\n    // Enhance description to include bonus info\n    Description: bonusAmount > 0 \n      ? `${record.Description} | Manual Bonus: £${bonusAmount} (${bonusReason})`\n      : record.Description\n  };\n  \n  // Recalculate efficiency metrics with new total\n  const adjustedSales = safeParseCurrency(record.AdjustedSales);\n  if (adjustedSales > 0) {\n    const newSalaryToSales = (newFinalTotal / adjustedSales) * 100;\n    enhancedRecord.SalaryToSalesPct = `${newSalaryToSales.toFixed(2)}%`;\n  }\n  \n  processedItems.push({ json: enhancedRecord });\n  \n  // Log the change\n  if (bonusAmount > 0) {\n    console.log(`   Original BonusPayment: ${record.BonusPayment}`);\n    console.log(`   Manual bonus added: £${bonusAmount}`);\n    console.log(`   New BonusPayment total: ${formatCurrency(totalBonusPayment)}`);\n    console.log(`   Original final total: ${record.FinalTotal}`);\n    console.log(`   New final total: ${formatCurrency(newFinalTotal)}`);\n    console.log(`   ✅ Bonus applied successfully`);\n  }\n}\n\n// Update shop metrics to include manual bonuses\nfor (let i = 0; i < processedItems.length; i++) {\n  const item = processedItems[i];\n  \n  if (item.json.Employee === \"SHOP_METRICS\") {\n    const currentShopTotal = safeParseCurrency(item.json.FinalTotal);\n    const newShopTotal = currentShopTotal + totalManualBonuses;\n    \n    // Update shop totals\n    item.json.FinalTotal = formatCurrency(newShopTotal);\n    item.json.BonusPayment = formatCurrency(totalManualBonuses); // Use existing BonusPayment column\n    \n    // Update shop efficiency with new totals\n    const shopSales = safeParseCurrency(item.json.AdjustedSales);\n    if (shopSales > 0) {\n      const newShopEfficiency = (newShopTotal / shopSales) * 100;\n      item.json.SalaryToSalesPct = `${newShopEfficiency.toFixed(2)}%`;\n    }\n    \n    // Update description\n    item.json.Description = `${item.json.Description} (includes £${totalManualBonuses.toFixed(2)} manual bonuses)`;\n    \n    console.log(`🏪 Updated shop metrics:`);\n    console.log(`   Shop total before bonuses: ${formatCurrency(currentShopTotal)}`);\n    console.log(`   Manual bonuses added: ${formatCurrency(totalManualBonuses)}`);\n    console.log(`   New shop total: ${formatCurrency(newShopTotal)}`);\n  }\n  \n  if (item.json.Employee === \"TOTAL_SUMMARY\") {\n    const currentTotalSummary = safeParseCurrency(item.json.FinalTotal);\n    const newTotalSummary = currentTotalSummary + totalManualBonuses;\n    \n    item.json.FinalTotal = formatCurrency(newTotalSummary);\n    item.json.BonusPayment = formatCurrency(totalManualBonuses); // Use existing BonusPayment column\n    item.json.Description = `${item.json.Description} (includes manual bonuses)`;\n  }\n}\n\n// Add a summary row for manual bonuses\nprocessedItems.push({\n  json: {\n    Employee: \"BONUS_SUMMARY\",\n    Period: processedItems.find(item => item.json.Period)?.json.Period || \"2025-07\",\n    PaymentType: \"MANUAL_BONUSES\",\n    WorkedDays: employeesWithBonuses.toString(),\n    WorkedHours: \"N/A\",\n    HourlyRate: \"N/A\",\n    SalesPercentage: \"N/A\",\n    BasePayment: \"£0.00\",\n    TotalSales: \"£0.00\",\n    AddlSales: \"£0.00\",\n    AdjustedSales: \"£0.00\",\n    SalesCommission: \"£0.00\",\n    BonusPayment: \"£0.00\",\n    BonusPayment: formatCurrency(totalManualBonuses), // Use existing BonusPayment column\n    FinalTotal: formatCurrency(totalManualBonuses),\n    AvgSalesPerDay: \"N/A\",\n    AvgSalesPerHour: \"N/A\",\n    Description: `Manual bonuses awarded to ${employeesWithBonuses} employees`,\n    ConfigVersion: \"Manual-v1\",\n    DataIssues: \"None\",\n    SalaryToSalesPct: \"N/A\",\n    SalesShareOfShop: \"N/A\",\n    SalaryShareOfShop: \"N/A\"\n  }\n});\n\nconsole.log(`\\n🎯 BONUS INJECTION COMPLETE:`);\nconsole.log(`   Total items processed: ${items.length}`);\nconsole.log(`   Employees receiving bonuses: ${employeesWithBonuses}`);\nconsole.log(`   Total manual bonuses awarded: ${formatCurrency(totalManualBonuses)}`);\nconsole.log(`   Items returned: ${processedItems.length}`);\n\n// List all bonuses awarded\nconsole.log(`\\n🎁 BONUSES AWARDED:`);\nObject.entries(MANUAL_BONUSES).forEach(([employee, bonus]) => {\n  if (bonus.amount > 0) {\n    console.log(`   ${employee}: £${bonus.amount} - ${bonus.reason}`);\n  }\n});\n\nreturn processedItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -16
+      ],
+      "id": "876c0b07-95a3-4c23-9e25-5b44ee8eb002",
+      "name": "manual bonus injection"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "start": {
+      "main": [
+        [
+          {
+            "node": "hours csv",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hours csv": {
+      "main": [
+        [
+          {
+            "node": "hours JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hours JSON": {
+      "main": [
+        [
+          {
+            "node": "parse hours csv",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parse hours csv": {
+      "main": [
+        [
+          {
+            "node": "employee name mapper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "calculate employee payments": {
+      "main": [
+        [
+          {
+            "node": "manual bonus injection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "employee name mapper": {
+      "main": [
+        [
+          {
+            "node": "calculate employee payments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "manual bonus injection": {
+      "main": [
+        [
+          {
+            "node": "payment breakdown sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "payment breakdown sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0c4d8627-1ad1-40d3-8d1f-ac31d260ae56",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aebeac476a1acfcf90b4162e732ed3266fe85da6cef0bb017b9556c9c58fe307"
+  },
+  "id": "wsv5EK4HnoqVps2D",
+  "tags": []
+}

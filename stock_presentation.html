@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Dashboard - Project Presentation</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #e2e8f0;
+        overflow-x: hidden;
+      }
+
+      .presentation-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .slide {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        border-radius: 1rem;
+        padding: 3rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        min-height: 600px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .slide h1 {
+        font-size: 3rem;
+        color: #34d399;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .slide h2 {
+        font-size: 2.5rem;
+        color: #34d399;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid rgba(52, 211, 153, 0.3);
+        padding-bottom: 0.5rem;
+      }
+
+      .slide h3 {
+        font-size: 1.8rem;
+        color: #60a5fa;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .slide p,
+      .slide li {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #cbd5e1;
+        margin-bottom: 0.8rem;
+      }
+
+      .slide ul {
+        margin-left: 2rem;
+        margin-top: 1rem;
+      }
+
+      .slide li {
+        margin-bottom: 0.6rem;
+      }
+
+      .badge {
+        display: inline-block;
+        background: rgba(52, 211, 153, 0.15);
+        border: 1px solid rgba(52, 211, 153, 0.3);
+        color: #34d399;
+        padding: 0.3rem 0.8rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
+        margin: 0.2rem;
+      }
+
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+      }
+
+      .badge-warning {
+        background: rgba(245, 158, 11, 0.15);
+        border-color: rgba(245, 158, 11, 0.3);
+        color: #fcd34d;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+      }
+
+      .card h4 {
+        color: #34d399;
+        margin-bottom: 0.8rem;
+        font-size: 1.3rem;
+      }
+
+      .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .stat {
+        text-align: center;
+        padding: 1.5rem;
+        background: rgba(52, 211, 153, 0.1);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(52, 211, 153, 0.2);
+      }
+
+      .stat-number {
+        font-size: 3rem;
+        color: #34d399;
+        font-weight: bold;
+      }
+
+      .stat-label {
+        font-size: 1rem;
+        color: #94a3b8;
+        margin-top: 0.5rem;
+      }
+
+      .code-block {
+        background: #1e293b;
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+        font-size: 0.9rem;
+      }
+
+      .code-block code {
+        color: #34d399;
+      }
+
+      .highlight {
+        background: rgba(52, 211, 153, 0.2);
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.25rem;
+      }
+
+      .navigation {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        display: flex;
+        gap: 1rem;
+        z-index: 1000;
+      }
+
+      .nav-btn {
+        background: rgba(52, 211, 153, 0.2);
+        border: 1px solid rgba(52, 211, 153, 0.4);
+        color: #34d399;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+
+      .nav-btn:hover {
+        background: rgba(52, 211, 153, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .slide-number {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        color: #64748b;
+        font-size: 0.9rem;
+      }
+
+      .slide {
+        position: relative;
+      }
+
+      @media print {
+        .navigation {
+          display: none;
+        }
+        .slide {
+          page-break-after: always;
+          margin-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="presentation-container">
+      <!-- Slide 1: Title -->
+      <div class="slide">
+        <span class="slide-number">1 / 20</span>
+        <h1>Stock Dashboard</h1>
+        <h2 style="text-align: center; margin-top: 2rem">
+          A Comprehensive Inventory Management System
+        </h2>
+        <div style="text-align: center; margin-top: 3rem">
+          <p style="font-size: 1.5rem; color: #94a3b8">
+            Real-time stock monitoring, intelligent reordering, and multi-shop
+            allocation
+          </p>
+        </div>
+      </div>
+
+      <!-- Slide 2: Problem Statement -->
+      <div class="slide">
+        <span class="slide-number">2 / 20</span>
+        <h2>The Problem We Solved</h2>
+        <div class="grid" style="margin-top: 2rem">
+          <div class="card">
+            <h3 style="color: #ef4444; margin-top: 0">Before</h3>
+            <ul>
+              <li>Manual stock tracking</li>
+              <li>Reactive reordering</li>
+              <li>No visibility into runway</li>
+              <li>Difficulty allocating across shops</li>
+              <li>Limited category insights</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3 style="color: #34d399; margin-top: 0">After</h3>
+            <ul>
+              <li>Automated calculations</li>
+              <li>Proactive reorder alerts</li>
+              <li>Real-time visibility</li>
+              <li>Intelligent shop allocation</li>
+              <li>Data-driven insights</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Tech Stack -->
+      <div class="slide">
+        <span class="slide-number">3 / 20</span>
+        <h2>Technology Stack</h2>
+        <div class="grid" style="margin-top: 2rem">
+          <div class="card">
+            <h4>Frontend</h4>
+            <div class="tech-stack">
+              <span class="badge">Next.js 16</span>
+              <span class="badge">React 19</span>
+              <span class="badge">TypeScript</span>
+              <span class="badge">Tailwind CSS 4</span>
+            </div>
+          </div>
+          <div class="card">
+            <h4>Data & Integration</h4>
+            <div class="tech-stack">
+              <span class="badge">Airtable API</span>
+              <span class="badge">Server Components</span>
+              <span class="badge">SSR</span>
+            </div>
+          </div>
+          <div class="card">
+            <h4>Visualization</h4>
+            <div class="tech-stack">
+              <span class="badge">Recharts</span>
+              <span class="badge">Custom UI</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Main Dashboard -->
+      <div class="slide">
+        <span class="slide-number">4 / 20</span>
+        <h2>Core Features: Main Dashboard</h2>
+        <h3>Stock Runway & Reorder Dashboard</h3>
+        <ul>
+          <li>
+            <strong>60-Day Stock Outlook:</strong> Color-coded time buckets with
+            critical alerts
+          </li>
+          <li>
+            <strong>Smart Filtering:</strong> View modes (Reorder, All, Combos)
+            with real-time search
+          </li>
+          <li>
+            <strong>Comprehensive Table:</strong> Stock levels, demand, runway,
+            order quantities
+          </li>
+          <li>
+            <strong>Sales Tracking:</strong> Individual, Combo, and Total sales
+            metrics
+          </li>
+        </ul>
+        <div style="margin-top: 2rem">
+          <span class="badge badge-danger">0-7 days: Critical</span>
+          <span class="badge badge-warning">8-14 days: Urgent</span>
+          <span class="badge">15-30 days: Watch</span>
+          <span class="badge">31-60 days: Planning</span>
+        </div>
+      </div>
+
+      <!-- Slide 5: Category Analysis -->
+      <div class="slide">
+        <span class="slide-number">5 / 20</span>
+        <h2>Core Features: Category Analysis</h2>
+        <h3>Category Demand Overview</h3>
+        <ul>
+          <li>
+            <strong>Year Comparison:</strong> 2024 vs 2025 historical data
+          </li>
+          <li>
+            <strong>Category Breakdown:</strong> 19mm, 25mm, Titanium, Infrared,
+            Ceramic, Sets
+          </li>
+          <li>
+            <strong>What-If Scenarios:</strong> Interactive modeling with
+            real-time calculations
+          </li>
+          <li>
+            <strong>Strategic Planning:</strong> Category-level demand insights
+          </li>
+        </ul>
+        <div class="card" style="margin-top: 2rem">
+          <h4>Benefits</h4>
+          <p>
+            Understand demand patterns, optimize category-level inventory, and
+            make data-driven decisions
+          </p>
+        </div>
+      </div>
+
+      <!-- Slide 6: Master Stock -->
+      <div class="slide">
+        <span class="slide-number">6 / 20</span>
+        <h2>Core Features: Master Stock Allocation</h2>
+        <h3>Multi-Shop Stock Management</h3>
+        <div class="grid">
+          <div class="card">
+            <h4>Shop Allocation</h4>
+            <p>
+              Allocate stock to Opatra and PYT shops with daily demand tracking
+            </p>
+          </div>
+          <div class="card">
+            <h4>Bulk Operations</h4>
+            <p>
+              Select multiple products and bulk allocate to shops, export to CSV
+            </p>
+          </div>
+          <div class="card">
+            <h4>Real-Time Calculations</h4>
+            <p>
+              Master stock runway, shop-level runway, remaining stock tracking
+            </p>
+          </div>
+          <div class="card">
+            <h4>Persistent Storage</h4>
+            <p>LocalStorage maintains allocations across sessions</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7: Product Details -->
+      <div class="slide">
+        <span class="slide-number">7 / 20</span>
+        <h2>Core Features: Product Detail Pages</h2>
+        <h3>Individual Product Insights</h3>
+        <ul>
+          <li>
+            <strong>Sales History:</strong> Monthly charts and year-over-year
+            comparisons
+          </li>
+          <li>
+            <strong>Stock Information:</strong> Current, incoming, and effective
+            stock
+          </li>
+          <li>
+            <strong>Demand Analysis:</strong> Daily and monthly demand patterns
+          </li>
+          <li><strong>What-If Panel:</strong> Interactive scenario modeling</li>
+          <li>
+            <strong>Supplier Info:</strong> Lead times, order-by dates,
+            recommended quantities
+          </li>
+        </ul>
+      </div>
+
+      <!-- Slide 8: Comparison Tools -->
+      <div class="slide">
+        <span class="slide-number">8 / 20</span>
+        <h2>Core Features: Comparison Tools</h2>
+        <div class="grid">
+          <div class="card">
+            <h4>Compare Products</h4>
+            <p>
+              Side-by-side comparison of multiple products for quick decision
+              making
+            </p>
+          </div>
+          <div class="card">
+            <h4>Compare One Product</h4>
+            <p>
+              Detailed single product analysis with multiple scenario
+              comparisons
+            </p>
+          </div>
+        </div>
+        <h3 style="margin-top: 2rem">Use Cases</h3>
+        <ul>
+          <li>Reorder prioritization</li>
+          <li>Stock level optimization</li>
+          <li>Demand pattern analysis</li>
+        </ul>
+      </div>
+
+      <!-- Slide 9: Stock Math Engine -->
+      <div class="slide">
+        <span class="slide-number">9 / 20</span>
+        <h2>Technical Highlights: Stock Math Engine</h2>
+        <h3>Intelligent Calculations</h3>
+        <div class="code-block">
+          <code>
+            computeStockDerived({<br />
+            &nbsp;&nbsp;currentStock,<br />
+            &nbsp;&nbsp;incomingStock,<br />
+            &nbsp;&nbsp;dailyDemand,<br />
+            &nbsp;&nbsp;leadTimeDays<br />
+            })
+          </code>
+        </div>
+        <ul style="margin-top: 1.5rem">
+          <li><strong>Effective Stock:</strong> Current + Incoming</li>
+          <li>
+            <strong>Days Until Runout:</strong> Effective stock / Daily demand
+          </li>
+          <li><strong>Order-By Date:</strong> Runout date - Lead time</li>
+        </ul>
+        <p style="margin-top: 1.5rem">
+          <span class="highlight">Features:</span> UTC date handling, null-safe
+          calculations, real-time updates
+        </p>
+      </div>
+
+      <!-- Slide 10: Data Integration -->
+      <div class="slide">
+        <span class="slide-number">10 / 20</span>
+        <h2>Technical Highlights: Data Integration</h2>
+        <h3>Airtable Integration</h3>
+        <div class="grid">
+          <div class="card">
+            <h4>Product Data</h4>
+            <p>Stock levels, incoming stock, suppliers, lead times</p>
+          </div>
+          <div class="card">
+            <h4>Sales Data</h4>
+            <p>Monthly records, historical trends, category breakdowns</p>
+          </div>
+          <div class="card">
+            <h4>Real-Time Updates</h4>
+            <p>
+              60s cache for products, 300s for suppliers, force-dynamic pages
+            </p>
+          </div>
+        </div>
+        <p style="margin-top: 2rem">
+          <span class="highlight">Single source of truth</span> - No data
+          duplication, always up-to-date
+        </p>
+      </div>
+
+      <!-- Slide 11: UX Design -->
+      <div class="slide">
+        <span class="slide-number">11 / 20</span>
+        <h2>User Experience Design</h2>
+        <h3>Modern, Intuitive Interface</h3>
+        <div class="grid">
+          <div class="card">
+            <h4>Design Principles</h4>
+            <ul style="font-size: 1rem">
+              <li>Dark theme</li>
+              <li>Color-coded alerts</li>
+              <li>Responsive design</li>
+              <li>Clear hierarchy</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>UX Features</h4>
+            <ul style="font-size: 1rem">
+              <li>Sticky headers</li>
+              <li>Hover states</li>
+              <li>Loading states</li>
+              <li>Breadcrumbs</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 12: Business Value -->
+      <div class="slide">
+        <span class="slide-number">12 / 20</span>
+        <h2>Business Value</h2>
+        <div class="grid">
+          <div class="card">
+            <h4>⏱️ Operational Efficiency</h4>
+            <p>
+              Automated calculations save time, real-time visibility improves
+              decision making
+            </p>
+          </div>
+          <div class="card">
+            <h4>🚨 Risk Mitigation</h4>
+            <p>
+              Early warning system prevents stockouts, proactive reordering
+              ensures availability
+            </p>
+          </div>
+          <div class="card">
+            <h4>📈 Strategic Insights</h4>
+            <p>
+              Category-level patterns, historical analysis, what-if planning
+            </p>
+          </div>
+          <div class="card">
+            <h4>💰 Cost Savings</h4>
+            <p>Reduced stockouts, optimized inventory, improved cash flow</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 13: Key Metrics -->
+      <div class="slide">
+        <span class="slide-number">13 / 20</span>
+        <h2>Key Metrics & KPIs</h2>
+        <div class="grid" style="grid-template-columns: repeat(4, 1fr)">
+          <div class="stat">
+            <div class="stat-number">0-7</div>
+            <div class="stat-label">Critical Days</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">8-14</div>
+            <div class="stat-label">Urgent Days</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">15-30</div>
+            <div class="stat-label">Watch Days</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">31-60</div>
+            <div class="stat-label">Planning Days</div>
+          </div>
+        </div>
+        <h3 style="margin-top: 2rem">Additional Metrics</h3>
+        <ul>
+          <li>Total units to order</li>
+          <li>Master stock levels</li>
+          <li>Shop allocation efficiency</li>
+          <li>Monthly demand totals</li>
+          <li>Category demand breakdowns</li>
+        </ul>
+      </div>
+
+      <!-- Slide 14: Architecture -->
+      <div class="slide">
+        <span class="slide-number">14 / 20</span>
+        <h2>Technical Architecture</h2>
+        <div class="code-block" style="text-align: center; padding: 2rem">
+          <code style="font-size: 1.2rem; line-height: 2">
+            ┌─────────────────┐<br />
+            │ Next.js App │<br />
+            │ (Server/Client) │<br />
+            └────────┬────────┘<br />
+            │<br />
+            ├─── Server Components (Data Fetching)<br />
+            ├─── Client Components (Interactivity)<br />
+            │<br />
+            ┌────────▼────────┐<br />
+            │ Airtable API │<br />
+            │ (Data Source) │<br />
+            └─────────────────┘
+          </code>
+        </div>
+        <h3 style="margin-top: 2rem">Key Patterns</h3>
+        <ul>
+          <li>Server Components for data fetching</li>
+          <li>Client Components for interactivity</li>
+          <li>Hybrid rendering approach</li>
+          <li>Optimized caching strategy</li>
+        </ul>
+      </div>
+
+      <!-- Slide 15: Future Enhancements -->
+      <div class="slide">
+        <span class="slide-number">15 / 20</span>
+        <h2>Future Enhancements</h2>
+        <div class="grid">
+          <div class="card">
+            <h4>Short-term</h4>
+            <ul style="font-size: 1rem">
+              <li>Real shop data integration</li>
+              <li>Automated notifications</li>
+              <li>Email/SMS alerts</li>
+              <li>Multi-user support</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Medium-term</h4>
+            <ul style="font-size: 1rem">
+              <li>Advanced analytics</li>
+              <li>Predictive forecasting</li>
+              <li>Ordering system integration</li>
+              <li>Mobile app</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Long-term</h4>
+            <ul style="font-size: 1rem">
+              <li>AI-powered predictions</li>
+              <li>Automated reordering</li>
+              <li>Multi-warehouse support</li>
+              <li>Advanced reporting</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 16: Statistics -->
+      <div class="slide">
+        <span class="slide-number">16 / 20</span>
+        <h2>Project Statistics</h2>
+        <div class="grid" style="grid-template-columns: repeat(2, 1fr)">
+          <div class="card">
+            <h4>Codebase</h4>
+            <ul>
+              <li>3,500+ lines of code</li>
+              <li>15+ page components</li>
+              <li>10+ reusable components</li>
+              <li>2 core utility libraries</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Features</h4>
+            <ul>
+              <li>6 main views/pages</li>
+              <li>3 comparison tools</li>
+              <li>Real-time calculations</li>
+              <li>Multiple data sources</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Data</h4>
+            <ul>
+              <li>100+ products tracked</li>
+              <li>7 categories</li>
+              <li>5 shops (placeholder)</li>
+              <li>2+ years historical data</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 17: Lessons Learned -->
+      <div class="slide">
+        <span class="slide-number">17 / 20</span>
+        <h2>Lessons Learned</h2>
+        <div class="grid">
+          <div class="card">
+            <h4>Technical</h4>
+            <ul style="font-size: 1rem">
+              <li>Server Components = performance</li>
+              <li>TypeScript catches errors early</li>
+              <li>Careful caching required</li>
+              <li>Client state is crucial</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Design</h4>
+            <ul style="font-size: 1rem">
+              <li>Color coding is essential</li>
+              <li>Responsive is non-negotiable</li>
+              <li>Loading states help UX</li>
+              <li>Dark theme reduces strain</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Business</h4>
+            <ul style="font-size: 1rem">
+              <li>Real-time data is critical</li>
+              <li>Automation saves time</li>
+              <li>Visual alerts are effective</li>
+              <li>What-if enables planning</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 18: Demo Highlights -->
+      <div class="slide">
+        <span class="slide-number">18 / 20</span>
+        <h2>Demo Highlights</h2>
+        <h3>What to Show</h3>
+        <div class="grid">
+          <div class="card">
+            <h4>Main Dashboard</h4>
+            <ul style="font-size: 1rem">
+              <li>60-day breakdown view</li>
+              <li>Filtering and sorting</li>
+              <li>Product table with alerts</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Category Analysis</h4>
+            <ul style="font-size: 1rem">
+              <li>Year selection</li>
+              <li>Category breakdown</li>
+              <li>What-if panel</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Master Stock</h4>
+            <ul style="font-size: 1rem">
+              <li>Shop allocation</li>
+              <li>Bulk operations</li>
+              <li>Runway calculations</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Product Detail</h4>
+            <ul style="font-size: 1rem">
+              <li>Sales history chart</li>
+              <li>Stock information</li>
+              <li>What-if scenarios</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 19: Conclusion -->
+      <div class="slide">
+        <span class="slide-number">19 / 20</span>
+        <h2>Conclusion</h2>
+        <h3>What We Built</h3>
+        <p style="font-size: 1.3rem; margin-bottom: 2rem">
+          A comprehensive, real-time inventory management dashboard that
+          transforms how stock is monitored, allocated, and reordered.
+        </p>
+        <div class="grid">
+          <div class="card">
+            <h4>Key Achievements</h4>
+            <ul style="font-size: 1rem">
+              <li>✅ Real-time stock monitoring</li>
+              <li>✅ Automated runway calculations</li>
+              <li>✅ Multi-shop allocation system</li>
+              <li>✅ Category-level insights</li>
+              <li>✅ Historical sales analysis</li>
+              <li>✅ What-if scenario planning</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Impact</h4>
+            <ul style="font-size: 1rem">
+              <li>Improved operational efficiency</li>
+              <li>Reduced stockout risk</li>
+              <li>Better inventory planning</li>
+              <li>Data-driven decision making</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 20: Thank You -->
+      <div class="slide" style="text-align: center">
+        <span class="slide-number">20 / 20</span>
+        <h1 style="margin-top: 4rem">Thank You!</h1>
+        <h2 style="margin-top: 3rem; border: none">Questions & Discussion</h2>
+        <div style="margin-top: 4rem">
+          <p style="font-size: 1.3rem; color: #94a3b8">
+            <strong>Project Repository:</strong> Next.js 16 + React 19 +
+            TypeScript
+          </p>
+          <p style="font-size: 1.3rem; color: #94a3b8; margin-top: 1rem">
+            <strong>Ready for:</strong> Production deployment, enhancements,
+            user feedback
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <button
+        class="nav-btn"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+      >
+        ↑ Top
+      </button>
+      <button class="nav-btn" onclick="window.print()">🖨️ Print</button>
+    </div>
+  </body>
+</html>
