@@ -1,13 +1,3 @@
 # Ignore markdown files (they're just documentation)
 *.md
 
-# Ignore other JSON files (keep package.json and vercel.json)
-!package.json
-!vercel.json
-
-# Keep HTML, CSS, JS, and screenshots
-*.html
-*.css
-*.js
-screenshots/
-
