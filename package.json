@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "PYT / PYT PLUS Company Systems Overview Presentation",
   "scripts": {
+    "build": "echo 'No build needed for static site'",
     "deploy": "echo 'Deploy to Vercel using: vercel'"
   },
   "keywords": [
